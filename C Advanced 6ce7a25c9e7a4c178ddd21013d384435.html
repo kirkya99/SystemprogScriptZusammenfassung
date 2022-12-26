@@ -1,0 +1,711 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>C Advanced</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	text-indent: -1.7em;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-opaquegray { background-color: rgba(255, 255, 255, 0.0375); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="6ce7a25c-9e7a-4c17-8ddd-21013d384435" class="page sans"><header><h1 class="page-title">C Advanced</h1></header><div class="page-body"><ul id="991e1b06-a5d6-47f9-b886-8191b1e7681d" class="bulleted-list"><li style="list-style-type:disc">Strukturen und Unions<ul id="0a093924-9a51-48d2-a5ae-fb4785990c41" class="bulleted-list"><li style="list-style-type:circle">Speicherung von Strukturen durch den Compiler<ul id="f4a7d610-7e4f-4d80-975b-c525cc383b28" class="bulleted-list"><li style="list-style-type:square">Packen von Strukturen</li></ul><ul id="8427e522-b148-402d-aba1-31be1856bd04" class="bulleted-list"><li style="list-style-type:square">Besondere Datentypen</li></ul></li></ul></li></ul><ul id="98f5ea07-ce21-467e-82db-81842a10d0d2" class="bulleted-list"><li style="list-style-type:disc">Zeiger<ul id="3190230d-1c2e-4c3c-ba2c-af160cd940ba" class="bulleted-list"><li style="list-style-type:circle">Zeiger und Arrays, Zeiger und Strukturen, Zeiger und Funktionen</li></ul><ul id="370c60ae-8204-459f-a41f-fbe3b6b60a19" class="bulleted-list"><li style="list-style-type:circle">Zeiger in Systemfunktionen</li></ul></li></ul><ul id="896a793d-80ef-4b1c-90ee-0cb009dbcf61" class="bulleted-list"><li style="list-style-type:disc">Speicherverwaltung<ul id="b8830261-5a42-4232-a640-8520e3bdb849" class="bulleted-list"><li style="list-style-type:circle">Dynamischer Speicher ( malloc, realloc, free)</li></ul><ul id="1267c16a-fceb-439b-93f8-6a3b48419a93" class="bulleted-list"><li style="list-style-type:circle">Kopieren von Strings (strcpy, strncpy)</li></ul><ul id="a6a3d2fb-7dcf-4aa2-a088-2d504a801bac" class="bulleted-list"><li style="list-style-type:circle">Kopieren von Binärdaten ( memcpy)</li></ul></li></ul><h1 id="dce9f703-3355-489f-a58c-900b88b6dcb1" class="">Strukturen</h1><ul id="2e1595d2-e2a0-49d0-be6e-8c1f5a580094" class="bulleted-list"><li style="list-style-type:disc">Datenobjekte mit mehreren Komponenten</li></ul><pre id="8104a728-93b2-42cd-99e5-4d68a2db68d7" class="code"><code>typedef struct myStruct
+{ char name [32];
+	unsigned int age;
+	float size; } myStruct;</code></pre><ul id="0b6b76ce-b63c-473d-b51a-733c2a65e6fe" class="bulleted-list"><li style="list-style-type:disc">Jede Komponente kann einen eigenen Datentype haben</li></ul><ul id="acae7731-99fa-43c8-bebe-38fb0d4822c4" class="bulleted-list"><li style="list-style-type:disc">Datentyp der Komponente kann auch ein Array der wieder eine Struktur sein <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">→</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span></span><span>﻿</span></span> <mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue">Verschachtelung</mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark> von Strukturen ist möglich</li></ul><ul id="5d9be0db-e4d0-42d4-9e44-65909c8d94e2" class="bulleted-list"><li style="list-style-type:disc"><strong><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue">Wo wird eine Struktur benötigt?</mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></strong><ul id="76379bf7-e70d-4786-8c3a-fd26536cd0a6" class="bulleted-list"><li style="list-style-type:circle">Speichern von Datensätzen aus einer Datenbank</li></ul><ul id="3d10e836-b1dc-4ad1-abb6-fffadc0abc85" class="bulleted-list"><li style="list-style-type:circle">Versenden/Empfangen von Nachrichten über das <mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue">Netzwerk</mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark> an ein anderes Programm (z.B. einen Server)<figure id="efaa1669-2689-41e2-8673-cbe0ce517716" class="image"><a href="Untitled.png"><img style="width:561px" src="Untitled.png"/></a></figure></li></ul></li></ul><pre id="e14880b5-6e87-4096-a0b8-bbbbab947000" class="code"><code>#define TEXT 1
+#define BINARY 2
+#define MIXED 3
+
+typedef struct
+{ char name[32];
+	char type;
+ 	unsigned int lengthBody;
+} messageHeader;
+
+typedef struct
+{ char number;
+	int zahl;
+	char title[6];}
+} messageBody;
+
+typedef struct
+{ messageHeader header;
+  messageBody body;
+} message;</code></pre><ul id="db410f7b-16a0-4de4-a481-d2f12fdc750f" class="bulleted-list"><li style="list-style-type:disc"><strong>Speicherung von Strukturen durch den Compiler</strong><ul id="44dd96f5-760a-4beb-9a18-05cd20cf8167" class="bulleted-list"><li style="list-style-type:circle">Der Compiler speichert die Komponenten einer Struktur nicht immer direkt hintereinander im Speicher, sondern kann Lücken im Speicher lassen, um die Zugriffsgeschwindigkeit zu optimieren</li></ul><pre id="7bd5d2bb-55eb-4f3e-be7a-046caff27066" class="code"><code>typedef struct
+{ char number;
+	int zahl;
+	char title [6];
+} messageBody;</code></pre><ul id="6a342e1d-4ec4-43bc-b26f-d99e1bc391c9" class="bulleted-list"><li style="list-style-type:circle">Erwartete Größe <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">→</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span></span><span>﻿</span></span> 11</li></ul><ul id="e60304de-9acb-44e5-a720-0eebb6e7e3b9" class="bulleted-list"><li style="list-style-type:circle">Tatsächliche Größe <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">→</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span></span><span>﻿</span></span> 16 (4+4+8)</li></ul><figure id="911326f8-22ad-4cc5-b04d-c87b16fdaadc" class="image"><a href="Untitled%201.png"><img style="width:613px" src="Untitled%201.png"/></a></figure></li></ul><ul id="4a2f2dcb-fc1e-4a8b-9839-8268c5fdbdac" class="bulleted-list"><li style="list-style-type:disc"><mark class="highlight-blue"><strong>Packen von Strukturen</strong></mark><ul id="bafa4c71-4957-4aec-b7af-1e0fc0ab9d5c" class="bulleted-list"><li style="list-style-type:circle">Man kann den Compiler anweisen bei Strukturen die Komponenten im Speicher direkt aneinander zu reihen<ul id="3fddc26f-e886-4a77-83d4-2ed8ed89ee2b" class="bulleted-list"><li style="list-style-type:square">Mit der Direktiven <code><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue">#pragma pack(1)</mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></code> oder</li></ul><ul id="bcf15401-0822-4dbb-b2eb-859c30645e62" class="bulleted-list"><li style="list-style-type:square">über ein Compilerattribut <code><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue">__attribute__((__packed__))</mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></code> </li></ul><p id="6d3aa597-51a6-49d5-b5ec-a5fff7c2c715" class="">
+</p><p id="a409f2d2-f348-4665-b3b6-18d7bad4f0b7" class="">
+</p></li></ul><pre id="0aef06a4-7490-482e-8bb2-14f9bf7494f6" class="code"><code>typedef struct __attribute__((__packed__))
+{ char number;
+	int zahl;
+	char title [6];
+} messageBody;</code></pre><ul id="35c3bb7b-8080-4fca-8b13-fc763f775b79" class="bulleted-list"><li style="list-style-type:circle">Erwartete Größe <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">→</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span></span><span>﻿</span></span> 11</li></ul><ul id="92f9ad53-8203-40e2-b7ed-c93a31aa74fe" class="bulleted-list"><li style="list-style-type:circle">Tatsächliche Größe <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">→</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span></span><span>﻿</span></span> 11</li></ul><figure id="dbd1f321-00b8-4c67-98cb-1162a631546c" class="image"><a href="Untitled%202.png"><img style="width:864px" src="Untitled%202.png"/></a></figure></li></ul><h1 id="4a5ef66d-05ce-4327-bb35-e8e8c839d180" class="">Unions</h1><ul id="fab475aa-31f4-4674-a073-6bcceaf1a036" class="bulleted-list"><li style="list-style-type:disc"><strong>Unions</strong><ul id="f15d66fa-05a7-45c6-841a-2928b613cc49" class="bulleted-list"><li style="list-style-type:circle">Unions sind ähnlich einer Struktur, mit dem Unterschied, dass die Komponenten der Union im Speicher überlagert werden und nicht wie bei einer Struktur nebeneinander liegen<ul id="bd184bc6-3036-4d10-a596-7175ed34eea7" class="bulleted-list"><li style="list-style-type:square">Die Union verbraucht im Speicher nur so viel Platz wie die größte Komponente benötigt<p id="e35f45dd-5a97-40e3-8914-88cd08e78bf7" class=""><strong><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red">Achtung:</mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></strong><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"> Von einer Untion kann man zu einem Zeitpunkt nur genau eine Komponente verwenden</mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></p></li></ul><ul id="ab79a829-fc35-4a76-b9f9-5d00febacac0" class="bulleted-list"><li style="list-style-type:square">Eine Struktur braucht Speicherplatz für alle Komponenten<ul id="4ff15380-6885-46be-8d88-4cbe629e3ed9" class="bulleted-list"><li style="list-style-type:disc">Man kann auf alle Komponenten gleichzeitig zugreifen</li></ul></li></ul></li></ul><pre id="ff0aff53-fb8e-43f7-95ac-497ed12e85cc" class="code"><code>typedef struct
+{ char number;
+	int zahl;
+	char title[6];
+} messageBody</code></pre><p id="305ff7ea-20ba-4c37-b8f4-1d50397c38dc" class="">Anordnung im Speicher</p><figure id="2d5cd646-a635-4811-8787-447c5c0e5466" class="image"><a href="Untitled%203.png"><img style="width:648px" src="Untitled%203.png"/></a><figcaption>Struktur benötigt 11 Byte im Speicher</figcaption></figure><pre id="2437ae9e-1f05-4056-91d9-c59f93f72eb4" class="code"><code>typedef union
+{ char number;
+	int zahl;
+	char title[6];
+} messageBody;</code></pre><figure id="2dda3c6a-49c0-4bed-ba8e-0f970ecf6148" class="image"><a href="Untitled%204.png"><img style="width:349px" src="Untitled%204.png"/></a><figcaption>Union benötigt 6 Byte im Speicher</figcaption></figure></li></ul><ul id="b1ab1d06-cc76-47dc-86de-a71d5fc36dff" class="bulleted-list"><li style="list-style-type:disc"><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Wann macht es Sinn eine Union zu verwenden?</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong><ul id="56f4828d-afc3-456f-a9c7-ca1512e30f64" class="bulleted-list"><li style="list-style-type:circle">Bei der Netzwerkprogrammierung<ul id="b9716a7e-8339-4b1c-b094-7b420ef34b70" class="bulleted-list"><li style="list-style-type:square">Will man über das Netzwerk nacheinander unterschiedliche Nachrichten versenden oder empfangen, bracht man für jeden Nachrichtentyp eine andere Struktur</li></ul><ul id="49e2bb68-554b-448d-816d-7921560079d7" class="bulleted-list"><li style="list-style-type:square">Da man zu einer Zeit nur eine Nachricht bestimmten Typs verarbeitet, kann man sich einen Union vauen, deren Komponenten die Strukturen der Nachrichtentypen enthält.</li></ul><figure id="0f081206-c8b2-4b69-a6e6-d6b8fafc71cd" class="image"><a href="Untitled%205.png"><img style="width:551px" src="Untitled%205.png"/></a></figure></li></ul></li></ul><ul id="bcf5da77-60b3-437d-b64f-ec0339f1cf26" class="bulleted-list"><li style="list-style-type:disc"><strong>Nachrichten</strong></li></ul><div id="cc82ae0c-9399-456c-8c0a-bbcb0a74c401" class="column-list"><div id="bd694c6a-e02b-44e6-ada7-a3b9e99859dc" style="width:50%" class="column"><figure id="2d834b9a-12c4-40f6-8037-ed52a0d5add1" class="image"><a href="Untitled%206.png"><img style="width:185px" src="Untitled%206.png"/></a></figure></div><div id="73cb1957-7b0f-4632-a5b7-65f4e973a1aa" style="width:50%" class="column"><ul id="b81ed524-3a2e-492d-bec0-e091d1f97833" class="bulleted-list"><li style="list-style-type:disc">Im <strong>Kopf</strong> der Nachricht git man an, welchen Nachrichtentyp man verwendet</li></ul><ul id="723e6799-225c-4c39-b13b-af8f47b4f05c" class="bulleted-list"><li style="list-style-type:disc">Der <strong>Inhalt</strong> der Nachricht kann sein:<ul id="4ef48867-1072-4d60-98df-a10d3ad31320" class="bulleted-list"><li style="list-style-type:circle">reine Textdaten</li></ul><ul id="a4605a46-3516-45b7-9738-6f3c37aa2bf9" class="bulleted-list"><li style="list-style-type:circle">reine Binärdaten</li></ul><ul id="af72df3f-7635-43bb-af6c-a4a6b34211e4" class="bulleted-list"><li style="list-style-type:circle">Mischform</li></ul></li></ul></div></div><figure id="d4561cc2-c83b-4a7a-b5a4-bbc1787f6e19" class="image"><a href="Untitled%207.png"><img style="width:797px" src="Untitled%207.png"/></a></figure><h1 id="da9d9daf-dab6-44ee-94dc-8e4ec1bcd764" class="">Integer-Datentypen</h1><ul id="2bd9b055-d748-4a35-8f6e-29eab3393e0b" class="bulleted-list"><li style="list-style-type:disc">Die Sprache C macht bei ganzzahligen Datentypen wie <code><mark class="highlight-blue">int</mark></code><mark class="highlight-blue">, </mark><code><mark class="highlight-blue">unsigned</mark></code><mark class="highlight-blue">, </mark><code><mark class="highlight-blue">short</mark></code><mark class="highlight-blue"> und </mark><code><mark class="highlight-blue">long</mark></code><mark class="highlight-blue"> </mark><span style="border-bottom:0.05em solid">keine Angabe wieviel Speicher</span> diese tatsächlich auf der Rechnerhardware belegen. Damit sind diese Datentypen abhängig von der Rechnerarchitektur.</li></ul><ul id="600350f1-7142-4810-ad89-3d3c20b0608c" class="bulleted-list"><li style="list-style-type:disc">In speziellen Fällen (z.B. Netzwerkprogrammierung) möchte man aber die Länge einer Variable im Speicher fest vorgeben<p id="a2a04e5b-4cdc-4921-8be6-28db096b020e" class="">Dazu werden in <code><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue">stdint.h</mark></mark></mark></mark></mark></mark></mark></mark></code><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"> </mark></mark></mark></mark></mark></mark></mark></mark> die folgenden Datentypen deklariert:<div class="indented"><p id="3792cbc7-2386-4b84-9861-5ed69f81e473" class=""><code>int</code><code><mark class="highlight-blue">8</mark></code><code>_t int</code><code><mark class="highlight-blue">8</mark></code><code>_t int</code><code><mark class="highlight-blue">16</mark></code><code>_t int</code><code><mark class="highlight-blue">32</mark></code><code>_t int</code><code><mark class="highlight-blue">64</mark></code><code>_t
+uint</code><code><mark class="highlight-blue">8</mark></code><code>_t uint</code><code><mark class="highlight-blue">8</mark></code><code>_t uint</code><code><mark class="highlight-blue">16</mark></code><code>_t uint</code><code><mark class="highlight-blue">32</mark></code><code>_t uint</code><code><mark class="highlight-blue">64</mark></code><code>_t</code></p></div></p></li></ul><p id="cbee7ebd-d279-4ffa-9daf-49564d854078" class="">
+</p></div></article></body></html>

@@ -1,0 +1,677 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Prozesse und Threads</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	text-indent: -1.7em;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-opaquegray { background-color: rgba(255, 255, 255, 0.0375); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="e3654a0e-01df-460f-a9b5-74750706847d" class="page sans"><header><h1 class="page-title">Prozesse und Threads</h1></header><div class="page-body"><h1 id="53954c13-8d1d-46a6-92ee-aea689490a57" class="">Prozesse in Linux</h1><ul id="41c341e0-a3d6-497e-8493-b5ad7192d1b0" class="bulleted-list"><li style="list-style-type:disc">Bei Starten eines Programms wird für dieses Programm ein Prozess im BS erzeugt<ul id="2845468a-8615-4501-807b-fec08c215b23" class="bulleted-list"><li style="list-style-type:circle">Jeder Prozess erhält vom BS eine Kennung die <strong>PID</strong></li></ul></li></ul><ul id="3068dc9d-993f-469a-9538-4f038f08d97f" class="bulleted-list"><li style="list-style-type:disc">Prozesse stehen in Vater-Kind-Beziehung<ul id="fd4a312c-736a-44d0-a432-29d3ec8bb7d6" class="bulleted-list"><li style="list-style-type:circle">Ein Prozess kann Kindprozesse erzeugen und auf deren Beendigung warten</li></ul></li></ul><ul id="302b0516-cc33-4675-bded-5d210cd481c1" class="bulleted-list"><li style="list-style-type:disc">Jeder Prozess hat seinen eigenen geschützten Adressraum, in dem das Programm (Codebereich im Speicher) und die Daten (Datenbereich, Stack, Heap) liegen<ul id="089f5ab2-42c4-4d39-8455-08a6f301266d" class="bulleted-list"><li style="list-style-type:circle">Ein Prozess kann nicht auf Daten im Adressraum eines anderen Prozesses zugreifen</li></ul><ul id="3da137f4-4aa0-4055-9ea7-da562ffb8a8d" class="bulleted-list"><li style="list-style-type:circle">Wollen zwei Prozesse auf gemeinsamen Daten arbeiten, geht das nur über das Betriebssystem ( <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\to</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span></span><span>﻿</span></span> shared Memory)</li></ul></li></ul><h2 id="99593349-eba6-44b1-95d3-1f9810ddf8ca" class="">Prozess erzeugen</h2><ul id="1428a579-2ac5-4fca-938c-ed9c8f468c8c" class="bulleted-list"><li style="list-style-type:disc">Erzeugen  eines Prozesses in Linux erfolgt in 2 Schritten<p id="31012a16-1a19-4b42-ab81-672afbe84776" class=""><strong>1. Schritt:</strong> Kindprozess erzeugen <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\to</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span></span><span>﻿</span></span> Systemfunktion <code>fork()</code></p><p id="95d1f547-1bf8-49f9-a676-587615e6e07b" class=""><strong>2. Schritt:</strong> Neues Programm in den Kindprozess laden <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\to</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span></span><span>﻿</span></span> Systemfunktion <code>exec()</code></p></li></ul><ul id="9907ccdb-150d-4233-bcdd-56ce3f7893f8" class="bulleted-list"><li style="list-style-type:disc">Systemfunktion <code>fork()</code><ul id="4253a538-c47d-4497-92be-afe346f0d470" class="bulleted-list"><li style="list-style-type:circle">Erzeugt eine Kopiedes aktuellen Prozesses. Kopie wird zu Kindprozess<p id="4e82740d-d97d-4122-8af1-42247dba128e" class=""><strong>Der Kindprozess übernimmt die Daten, den Programmcode, den Befehlszähler und die Dateideskriptoren vom Elterprozess</strong></p></li></ul><ul id="8723a5e3-1c80-4e6a-911f-d37c3bb2e99e" class="bulleted-list"><li style="list-style-type:circle">Nach erfolgreichem fork-Aufruf gibt es 2 Prozesse mit identischen Daten und Programm. Untscheidung in welchem Prozess man sich befindet nur über return-Wert von <code>fork</code> möglich</li></ul><figure id="e357c5f1-2c1b-4d36-8423-a79b9f462141" class="image"><a href="Untitled%2017.png"><img style="width:935px" src="Untitled%2017.png"/></a></figure></li></ul><ul id="984b195a-019d-4bf1-bbbf-361580fcfed4" class="bulleted-list"><li style="list-style-type:disc">in der Regel soll im Kindprozess ein eigenes Programm abgearbeitet werden
+<style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\to</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span></span><span>﻿</span></span> man muss im Kindprozess den Programm- und Datenbereich mit einem neuen Programm überladen</li></ul><p id="e5861757-bc92-4f4d-9c5b-4cafd9dfe643" class=""><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\to</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span></span><span>﻿</span></span> Systemfunktion <code>int execl(const char *path, const char *arg, ...);</code></p><figure id="6c053329-fb24-42fe-b70c-41fd06a3d97d" class="image"><a href="Untitled%2018.png"><img style="width:1088px" src="Untitled%2018.png"/></a></figure><figure id="84d00071-314c-4007-b62e-7262328600cd" class="image"><a href="Untitled%2019.png"><img style="width:1066px" src="Untitled%2019.png"/></a></figure><h2 id="1e4b4ba7-da1b-4900-b9cc-0afb7d96b2e9" class="">Prozessende</h2><h3 id="a0a77b8f-72de-4a22-b0fa-4b66f2e0bce0" class="">Freiwilliges Prozessende</h3><ul id="a99fbe8d-c2b6-4eaa-a01f-4fe01446a996" class="bulleted-list"><li style="list-style-type:disc">Funktion main endet regulär mit return-Wert</li></ul><ul id="1adcaa5e-1bae-4ae3-8bc2-1a56b4541bae" class="bulleted-list"><li style="list-style-type:disc">Aufruf der Systemfunktion <code>exit()</code></li></ul><figure id="825e9fec-0507-4e64-8c40-b012f83c146e" class="image"><a href="Untitled%2020.png"><img style="width:897px" src="Untitled%2020.png"/></a></figure><h3 id="bfee92de-65e7-459b-9578-a42e3cc24119" class="">Prozessende erzwingen</h3><ul id="bf9d290d-7336-4fbf-b37b-3b77b22ffcd0" class="bulleted-list"><li style="list-style-type:disc">Signal an den Prozess senden</li></ul><figure id="de7a7ea8-7f5b-4d6b-9843-5d1642e18b27" class="image"><a href="Untitled%2021.png"><img style="width:975px" src="Untitled%2021.png"/></a></figure><h2 id="2f3f0df9-a111-402b-98da-573c9d9a07e6" class="">Prozesse in Linux</h2><p id="463f6657-7c70-4b86-9b88-0acdfc0a7337" class="">Warten auf Ende einse Prozesses</p><ul id="3e3df504-755d-4a60-8aa2-5aac3817be58" class="bulleted-list"><li style="list-style-type:disc">Wenn ein Prozess sich beendet, übergibt der Prozess dem Betriebssystem einen Status.
+Dieser Status definiert, ob der Prozess mit oder ohne Fehler beendet wurde.</li></ul><ul id="5cfa609c-066f-483e-83d0-e25e44f5d53d" class="bulleted-list"><li style="list-style-type:disc">Solange der Status im Betriebssystem gespeichert wird, ist der Prozess zwar tot, aber doch noch nicht richtig <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\to</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span></span><span>﻿</span></span> Prouess hat den Zustand <mark class="highlight-blue"><strong>Zombie</strong></mark></li></ul><ul id="08923cfc-6aab-47aa-8452-a6c6edae0886" class="bulleted-list"><li style="list-style-type:disc">Um den Prozess endgültig zu töten muss der Status vom Vaterprozess vom Betriebssystem abgeholt werden</li></ul><ul id="0b03eb59-c572-4ba3-8989-78dfdf73862d" class="bulleted-list"><li style="list-style-type:disc">Beim Abholen des Status kann der Vaterprozess entscheiden, ob er auf das Ende des Prozesses warten möchte oder ob er solange nachfragt, bis der Prozess beendet  wurde (Polling).<ul id="8eace195-40a6-4c0f-9fd5-93d3a2e665e7" class="bulleted-list"><li style="list-style-type:circle"><strong>pid_t wait(int </strong>status); 
+<strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Wartet </strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong>auf das Ende eines Prozesses. In status wird der Status des beendeten Prozesses geschrieben. Return-Wert ist die pid des beendeten Prozesses</li></ul><ul id="8b65fcb7-8d33-42ed-be8b-8a3a0499ba55" class="bulleted-list"><li style="list-style-type:circle"><strong>pid_t waitpid(pid_t </strong><em>pid</em>, <strong><strong><strong>int</strong></strong></strong>  *<em>wstatus</em>, <strong><strong><strong>int</strong></strong></strong> <em>options</em>);
+Holt sich den Status des Prozesses mit der angegebenen pid.
+Der Vater kann auf das Ende des Prozesses warten oder nicht.</li></ul></li></ul><h1 id="a42eba95-0eea-42b0-867a-3e769e81a45e" class="">Threads in Linux</h1><ul id="d295d1c9-9899-41dd-a380-4f337285ffe6" class="bulleted-list"><li style="list-style-type:disc">Innerhalb eines Prozesses können Funktionen nebenläufig in Threads ausgeführt werden</li></ul><ul id="579bbd4b-f9d6-49f0-acf6-5c730a28c071" class="bulleted-list"><li style="list-style-type:disc">Threads stehen <span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid"><span style="border-bottom:0.05em solid">nicht</span></span></span></span></span> in Vater-Kind-Beziehung<ul id="ecfbfbb6-c717-4d2c-8826-d40e997b3a58" class="bulleted-list"><li style="list-style-type:circle">Zu jedem Prozess wird mindestens ein Thread erzeugt. Das ist der Haupthread, in dem main abgearbeitet wird</li></ul></li></ul><ul id="3c633d06-0746-40fe-a552-81a2736f58ac" class="bulleted-list"><li style="list-style-type:disc">Jeder Thread hat seinen eigenen Stack</li></ul><ul id="10e3e2b6-45e0-4be9-8b4f-fd158a08bf75" class="bulleted-list"><li style="list-style-type:disc">Alle Threads teilen sich den Datenbereich im Speicher und alle geöffneten Dateien</li></ul><figure id="91cc33e9-dafc-451a-9f7a-0ba432b1b7be" class="image"><a href="Untitled%2022.png"><img style="width:901px" src="Untitled%2022.png"/></a></figure><figure id="d5681553-c3e8-42c0-9161-6d68d3da3867" class="image"><a href="Untitled%2023.png"><img style="width:968px" src="Untitled%2023.png"/></a></figure><ul id="d5f9c75e-81b1-4198-a2a6-a1a7abc6c684" class="bulleted-list"><li style="list-style-type:disc"><strong>Wann benötigt mann mehrere Threads?</strong><ul id="bad46630-193a-44d5-a683-92e6180d8471" class="bulleted-list"><li style="list-style-type:circle">Client-Server-Anwendung<ul id="7248c69d-9bd1-429a-a4a9-586d6594a8a5" class="bulleted-list"><li style="list-style-type:square">Server muss mehrere Clients gleichzeitig bedienen. Für jeden Client wird ein Thread erzeugt. Jeder Thread kann dann nebenläufig arbeiten und mit seinem Client kommunizieren<figure id="631d5858-cd81-47e7-a459-a13fd8099d4f" class="image"><a href="Untitled%2024.png"><img style="width:290px" src="Untitled%2024.png"/></a></figure></li></ul></li></ul><ul id="b6c28d76-b3e2-4b4f-8cd6-b20fdcd53290" class="bulleted-list"><li style="list-style-type:circle">Prozess, der gleichzeitig auf mehrere Eingaben reagieren muss z.B. EIngaben von der Konsole und Nachrichten, die über das Netzwerk kommen<figure id="38520405-9994-402a-ad88-5ba48cd6e49e" class="image"><a href="Untitled%2025.png"><img style="width:249px" src="Untitled%2025.png"/></a></figure></li></ul><ul id="7b3e5207-aee9-4e2b-8db7-86f4ead45791" class="bulleted-list"><li style="list-style-type:circle"> Prozess, der fortlaufend Ausgaben produziert aber auch gleichtzeitig auf Eingaben reagieren muss<figure id="919c45f3-7972-4940-a9a8-f63ff747fce1" class="image"><a href="Untitled%2026.png"><img style="width:247px" src="Untitled%2026.png"/></a></figure></li></ul><h2 id="e1ffdc41-ce8f-4761-8dbe-44c755de0b9f" class="">Threads erzeugen</h2><ul id="e82e76ff-d5a9-42cd-82da-9408e34ff49c" class="bulleted-list"><li style="list-style-type:circle">Für jeden Thread benötigt man eine Funktion</li></ul><ul id="a022e033-4eef-4298-a30b-7ee80c9665ac" class="bulleted-list"><li style="list-style-type:circle">Im Haupt-Thread wird die main-Funktion abgearbeitet</li></ul><ul id="b9f2d409-8281-4310-a73e-b8c53d513584" class="bulleted-list"><li style="list-style-type:circle">Für jeden weiteren Thread muss man eine FUnkion mit bestimmbter Signatur deklarieren<ul id="ba0af2b9-b58d-4286-bcb6-903fc0cca5cd" class="bulleted-list"><li style="list-style-type:square">Signatur Thread-Funktion: <strong>void</strong> * <em><em><em><em><em><em><em><em><em><em><em><em><em>start_routine</em></em></em></em></em></em></em></em></em></em></em></em></em> (<strong><strong><strong><strong>void</strong></strong></strong></strong> *)</li></ul></li></ul><ul id="ea9d6852-6bdb-4011-a25e-6778fd855815" class="bulleted-list"><li style="list-style-type:circle">System-Funktion: <code>pthread_create()</code> erzeugt einen Thread</li></ul><pre id="b8374208-26f5-4252-bce8-f0ce7ce5af79" class="code"><code>#include &lt;pthread.h&gt;
+int pthread_create(pthread_t *thread, const pthread_attr_t * attr, 
+											void * (* start_routine)(void *), void * arg);</code></pre><figure id="1cbd8b4c-fa27-4df0-94a1-a684f0e6f0c4" class="image"><a href="Untitled%2027.png"><img style="width:1139px" src="Untitled%2027.png"/></a></figure><p id="9a61e540-0b07-450c-8ccc-2f97cf89a583" class="">
+</p></li></ul><figure id="7cf84bd7-bcf0-4c4a-b09e-2eed3662dda7" class="image"><a href="Untitled%2028.png"><img style="width:1112px" src="Untitled%2028.png"/></a></figure><ul id="3a656b94-4185-41a5-b6a9-e861e4230fb2" class="bulleted-list"><li style="list-style-type:disc"><strong>Thread beenden</strong><ul id="553e630d-d983-4c56-a9a2-d744914bfd95" class="bulleted-list"><li style="list-style-type:circle">freiwillig: <strong>void pthread_exit(void</strong> *<em>retval</em>);</li></ul><ul id="b2bfe13f-3e68-4ed2-a2c5-1836e74f4ae5" class="bulleted-list"><li style="list-style-type:circle">unfreiwillig: <strong>int pthread_cancel(pthread_t</strong> <em>thread</em>);</li></ul><ul id="f2490279-c531-4d90-a8bb-5d8576c35e2b" class="bulleted-list"><li style="list-style-type:circle">Auf Thread-Ende warten: <strong>int pthread_join(pthread_t</strong> <em>thread</em>, <strong>void</strong> **<em>retval</em>);</li></ul><figure id="f100110e-df7b-434c-bca6-e8dc0906f615" class="image"><a href="Untitled%2029.png"><img style="width:938px" src="Untitled%2029.png"/></a></figure></li></ul></div></article></body></html>

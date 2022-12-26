@@ -1,0 +1,1070 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Einführung in die Netzwerkprogrammierung mit Sockets</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	text-indent: -1.7em;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-opaquegray { background-color: rgba(255, 255, 255, 0.0375); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="fbc0a4db-d019-48fa-824d-b2fa63e12348" class="page sans"><header><h1 class="page-title">Einführung in die Netzwerkprogrammierung mit Sockets</h1></header><div class="page-body"><h1 id="0c03e55a-e130-4577-a63e-b879e1fb1d9d" class="">Der Server </h1><p id="8ff46084-530b-42ea-bdc2-21634b35522a" class="">Zuerst erstellen wird unsere Serveranwendung. Unser Server soll Nachrichten, welche er vom Client erhält an diesen zurückschicken.</p><p id="34d223a8-76c7-4fd3-816f-61f1befed4d4" class="">Unser Server hat folgende Aufgaben:</p><ol type="1" id="4b7a0b14-80c7-4a90-ab9d-40d53322db3c" class="numbered-list" start="1"><li>Anlegen eines Sockets</li></ol><ol type="1" id="d53b212f-66dd-4200-848c-37630e772eef" class="numbered-list" start="2"><li>Binden des Sockets an eine IP-Adresse und einen Port</li></ol><ol type="1" id="780bbd2c-11df-4254-ae62-2207a391fe9a" class="numbered-list" start="3"><li>Verbinungswarteschlange einrichten</li></ol><ol type="1" id="bc249f21-b5fd-4ec6-a20a-61797caa8b77" class="numbered-list" start="4"><li>Verbindung annehmen</li></ol><ol type="1" id="73015009-67e8-4ed9-b29b-3db224b1d133" class="numbered-list" start="5"><li>Datenaustausch mit Client</li></ol><h2 id="33cc9ba3-0d1a-437c-b91a-22251c5e2d7e" class="">Anlegen eines Sockets</h2><p id="87fa8c6d-1d91-447a-951b-bcac85fe2aae" class="">Im ersten Schritt muss unser Server und später auch unser Client einen Socket vom Betriebssystem anfordern. Die Syntax hierfür ist unter UNIX folgende:</p><pre id="161a35b4-97d4-465a-ad90-19942a797ba9" class="code"><code>#include &lt;sys/types.h&gt;
+#include &lt;sys/socket.h&gt;
+
+int socket(int domain, int type, int protocol);</code></pre><p id="1b871967-d60e-411e-966a-24feff3e1675" class="">Als Rückgabewert erhalten Sie den Socket-Deskriptor. Diesen benötgen Sie, um den Socket anzusprechen. Falls es zu einem Fehler kam, gibt die Funktion den Wert <code>&#x27;-1&#x27;</code> zurück.</p><p id="eb9c3f4a-797b-4766-abf7-23d6b48a1c96" class="">Der erste Parameter <code>domain</code> gibt die zu verwendende Adressdomäne an. Die vollständige Liste aller unterstützten Domänen finden Sie in der Headerdatei <code>&lt;sys/socket.h&gt;</code>. In der folgenden Tabelle finden Sie eine kurze Übersicht.</p><p id="674b7260-616e-4df9-a555-b66fe849b2d0" class=""><strong>Adressdomäne Bedeutung</strong></p><table id="a8d361cd-deca-4511-9afb-53d93eba9628" class="simple-table"><tbody><tr id="6888e5e7-ba8d-4fa4-82e1-9974fb4ec92a"><td id="Zfga" class="">AF_UNIX</td><td id="C`Je" class="">Unix Domain Socket</td></tr><tr id="688b6b9f-2e78-4e8b-be41-9b38be2b92e1"><td id="Zfga" class="">AF_INET</td><td id="C`Je" class="">IP-Protokoll Version 4</td></tr><tr id="cc8471f1-dde5-40b0-9031-1a6b1edd49b8"><td id="Zfga" class="">AF_INET6</td><td id="C`Je" class="">IP-Protokoll Version 6</td></tr></tbody></table><p id="a70a723f-e8e9-40ea-bace-824fd12e232a" class="">Der zweite Parameter <code>type</code> legt die Übertragungsart des Sockets fest. Für TCP verwenden Sie die Konstante <code>SOCK_STREAM</code> und für UDP die Konstante <code>SOCK_DGRAM</code>.</p><p id="96af18c2-eb00-4cb8-9b5f-1f84c36b0af7" class="">Der letzte Parameter bestimmt das Protokoll. Hier geben wir <code>‘0’</code> an, um das Standardprotokoll zu verwenden. Bei <code>SOCK_STREAM</code> wird für TCP und bei <code>SOCK_DGRAM</code> wird UDP genutzt.</p><h2 id="ae4105ee-20fa-4918-a44f-194685395af3" class="">Binden des Sockets an eine IP-Adresse und einen Port</h2><p id="f44fab7c-f021-4a88-bc81-4cd59a2c5a15" class="">Unserem zuvor angelegten Socket binden wir nun an eine IP-Adresse und einen Port. Die Syntax ist:</p><pre id="39e6514c-0d00-4e73-91f6-c8d52716f461" class="code"><code>#include &lt;sys/types.h&gt;
+#include &lt;sys/socket.h&gt;
+
+int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);</code></pre><p id="46e33e5d-b84d-4c4b-a6b6-fe8ef58d2bed" class="">Als ersten Parameter geben wird unseren angeforderten Socket an. Hierfür benötigen wir den zuvor erhaltenen Socket-Deskriptor.</p><p id="823ac39f-f9db-4c15-8672-0e2bfac9cb7c" class="">Mit dem zweiten Parameter wird ein Zeiger auf eine Adresse und einen Port angegeben. Für IPv4 wird das <code>struct sockaddr_in</code> verwendet, welches in <code>netinet/in.h</code> definiert ist:</p><pre id="5c7a9129-6c89-443e-8329-5991d753fcf3" class="code"><code>#include &lt;sys/socket.h&gt;
+#include &lt;netinet/in.h&gt;
+#include &lt;netinet/ip.h&gt;    // superset of previous
+
+struct in_addr
+{
+        uint32_t       s_addr;     // address in network byte order
+};
+
+struct sockaddr_in
+{
+        sa_family_t    sin_family; // address family: AF_INET
+        in_port_t      sin_port;   // port in network byte order
+        struct in_addr sin_addr;   // internet address
+};</code></pre><p id="bf868c78-d094-4793-a0ec-794317f35982" class="">Der letzte Parameter gibt die Größe der als zweiten Parameter übergebenen Adressstruktur an.</p><p id="168fbb03-bfd2-4a1b-86fb-01ace6cf09c8" class="">Mit dem bisher Gelernten können wir nun folgendes schreiben:</p><pre id="2e565544-54fc-484d-aa0e-9e0151b9142c" class="code"><code>#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;sys/socket.h&gt;
+#include &lt;netinet/in.h&gt;
+
+int main(void)
+{
+	const in_port_t port = 8111;
+
+	/* create socket */
+	const int listen_sock = socket(AF_INET, SOCK_STREAM, 0);
+	if(listen_sock &lt; 0)
+	{
+		perror(&quot;Could not create socket&quot;);
+		return 1;
+	}
+
+	/* prepare socket address structure */
+	struct sockaddr_in addr;
+	memset(&amp;addr, 0, sizeof(addr));			//any fields not set below must be zero
+	addr.sin_family = AF_INET;			//use IPv4
+	addr.sin_addr.s_addr = htonl(INADDR_ANY);	//accept connections from all addresses and networks
+	addr.sin_port = htons(port);			//set the port to use
+
+	/* bind the socket to the address specified above */
+	if(bind(listen_sock, (const struct sockaddr *)&amp;addr, sizeof(addr)) &lt; 0)
+	{
+		perror(&quot;Could not bind socket to address&quot;);
+		return 1;
+	}
+
+	//…
+	return 0;
+}</code></pre><p id="60278ce1-b4cc-49ac-b7c8-4fd56416659a" class="">Dem aufmerksamen Leser  wird der Cast beim Aufruf von <code>bind()</code> aufgefallen sein:
+<code>bind</code> erwartet einen Zeiger auf ein <code>struct sockaddr</code>, wir liefern aber einen auf <code>struct sockaddr_in</code>.</p><p id="981b24f9-f8b1-4243-b69f-e122be656d75" class="">Der Hintergrund hierfür ist, dass das Socket-Interface allgemein gehalten ist und auch z.B. mit IPv6 funktioniert. Dazu wurde das generelle <code>struct sockaddr</code> definiert, welches <code>bind</code> als Übergabeparameter dient (genauer: ein Zeiger darauf). Für jede unterstütze Adressdomäne gibt es außerdem eine weitere, spezialisierte Struktur, die sich einfacher als die allgemeine ausfüllen kässt und so aufgebaut ist, dass sie mit der allgemeinen Struktur kompatibel ist. Bei IPv4 ist das eben <code>struct sockaddr_in</code>. Da aber der Compiler von der Kompatibilität nichts weiß, müssen wird casten. </p><h2 id="19149216-2e55-4dad-a3e1-28aec3aba763" class="">Verbindungswarteschlange einrichten</h2><p id="ece3a3e3-3dbc-4c95-bd8c-6e4d969b5f6a" class="">Im nächsten Schritt muss eine Warteschlange für eingehende Verbindungen eingerichtet werden. Diese wird mit der Funktion <code>listen()</code> umgesetzt. Die Syntax ist die folgende:</p><pre id="4ec2bbb1-f6d7-45c8-a519-de02a0568277" class="code"><code>#include &lt;sys/types.h&gt;
+#include &lt;sys/socket.h&gt;
+
+int listen(int sockfd, int backlog);</code></pre><p id="78bbcb58-8a5b-45f2-848a-432499ca6857" class="">Der erste Paramter gibt den Socket-Deskriptor an, für den die Warteschlange eingerichtet werden soll. Der zweite Parameter steuert die Größe der Warteschlange. Hier werden typischerweise kleinste Ganzzahlwerte zwischen 4 und 10 verwendet.</p><p id="b2f3bebf-79c7-4f6f-b912-fe6f70dd4980" class="">Bei einem Fehler gibt die Funktion den Wert <code>-1</code> zurück. Sollte es zu keinem Fehlern gekommen sien, gibt die Funktion den Wert <code>0</code> zurück. Mit diesem Wissen können wir folgende Fehlerabfrage einbauen:</p><pre id="d186a75b-02e2-4832-818c-346909abb06e" class="code"><code>if(listen(sock, 3) == -1)
+{
+	//Error handling
+}</code></pre><h2 id="191221a5-9f9e-43cf-b804-1405c4bbbd1f" class="">Verbindung annehmen</h2><p id="6055c096-d829-4d2f-9c4b-d31937f60633" class="">Da die Warteschlange für eingehende Verbindungen nun eingerichtet ist, fehlt für einen erfolgreichen Verbindungsaufbau noch das Annehmen von Verbindungsanfragen. Hierfür wird die Funktion <code>accept()</code> mit der folgenden Syntax verwendet:
+</p><pre id="b75e1398-fef3-4d41-9367-ce6b187a09c3" class="code"><code>#include &lt;sys/types.h&gt;
+#include &lt;sys/socket.h&gt;
+
+int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);</code></pre><p id="eeaae124-00d0-4e0c-8603-384c0252008a" class="">Als Rückgabewert wird ein Socket-Deskriptor eines neuen Sockets zurückgegeben.
+DIeser ist mit dem Cilentsocket verbunden. Der Usprungssocket bleibt erhalten und kann weiter verwendet werden um weitere Verbindungsanfragen anzunehmen.</p><p id="cf7f7194-66df-4246-b965-51c218d35fe9" class="">Der erste Parameter gibt den Socket an, an weclhem Verbinungsanfragen ankommen.</p><p id="46a3c6d9-3538-481c-91dd-3f2982018546" class="">Über den zweiten Parameter kann man sich die Netzwerkadresse und den Port des Clients geben lassen. Ist man an dieser Information nicht interessiert, so kann man hier und für den dritten Paramter einfach <code>NULL</code> übergeben.</p><p id="96ffca3f-a3f7-4915-aa0b-80e49c91088f" class="">Der dritte Parameter ist ein Zeiger auf die Größe des als zweiten Parameters übergebenen Puffers. Nach Abschluss des Aufrufes steht in <code>*addrlen</code> die tatsächliche Größe der Adresse, sofern nicht <code>NULL</code> übergeben wurde.</p><p id="ac20e3ee-8a86-4a9d-9226-021b15770827" class=""><strong>Hinweis:</strong> <code>accept()</code> blockiert solange, bis tatsächlich (mindestens) eine Verbindungsanfrage in der Warteschlange steht.</p><h3 id="a7d3f73b-6366-49c7-b6ee-8fc829a35695" class="">Codebeispiel zum Annehmen von Verbindungen</h3><p id="27e3bcfd-b238-4269-b381-195da04cc895" class="">Aus dem bisher erlernten ergibt sich folgender Programmcode:</p><pre id="2e27f27d-c75c-4814-8932-a097191c3b35" class="code"><code>#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;sys/socket.h&gt;
+#include &lt;netinet/in.h&gt;
+
+int main(void)
+{
+    const in_port_t port = 8111;
+
+    /* create socket */
+    const int listen_sock = socket(AF_INET, SOCK_STREAM, 0);
+    if(listen_sock &lt; 0)
+    {
+        perror(&quot;Could not create socket&quot;);
+        return 1;
+    }
+
+    /* prepare socket address structure */
+    struct sockaddr_in addr;
+    memset(&amp;addr, 0, sizeof(addr));            //any fields not set below must be zero
+    addr.sin_family = AF_INET;                 //use IPv4
+    addr.sin_addr.s_addr = htonl(INADDR_ANY);  //accept connections from all addresses and networks
+    addr.sin_port = htons(port);               //set the port to use
+
+    /* bind the socket to the address specified above */
+    if(bind(listen_sock, (const struct sockaddr *)&amp;addr, sizeof(addr)) &lt; 0)
+    {
+        perror(&quot;Could not bind socket to address&quot;);
+        return 1;
+    }
+
+    /* mark socket to be accepting connections */
+    if(listen(listen_sock, backlog) &lt; 0)
+    {
+        perror(&quot;Could not mark socket to be accepting connections&quot;);
+        return 1;
+    }
+
+    /* wait for a client connection and accept it */
+    const int client_sock = accept(listen_sock, NULL, NULL);
+    if(client_sock &lt; 0)
+    {
+        perror(&quot;Could not accept client connection&quot;);
+        return 1;
+    }
+
+    //…
+
+    return 0;
+}</code></pre><h2 id="4b6512b6-b8e7-497c-bc64-2aec7b9f5301" class="">Datenaustasch mit Client</h2><p id="45be968b-cece-4c44-88da-eb7a7b1db7c9" class="">Nach dem erfolgreichen Aufbauen einer Verbindung können nun Daten über diese Verbindung ausgetauscht werden.</p><p id="6a62ba18-141a-4704-a31d-96d0111e71df" class="">Da unter Unix auch Sockets wie Dateien behandelt werden, können dazu die üblichen Ein-/Ausgabefunktionen <code>read()</code> und <code>write()</code> (zum Senden) verwendet werden:</p><pre id="1d2c7353-131b-49d5-8429-d0fe19b0ce3a" class="code"><code>#include &lt;unistd.h&gt;
+
+ssize_t read(int fd, void *buf, size_t nbytes);
+ssize_t write(int fd, const void *buf, size_t nbytes);</code></pre><p id="4567f3b2-6617-4c6d-aae6-7d395e0f2939" class="">Der erste Parameter gibt an, welche Datei gelesen oder geschrieben werden soll, also in unserem Fall von <code>accept()</code> zurückgegebenen Verbindungs-Socket.</p><p id="942f2091-2136-4561-9bd9-5d07fcd38883" class="">Der zweite Parameter ist ein Zeiger auf einen Puffer, indem die gelesenen Daten abgefragt werden bzw. der die zu schreibenden Daten enthält.</p><p id="051a6b10-d1af-4454-8ea1-428d3c437147" class="">Der dritte Parameter gibt an, wie viele Bytes maximal gelesen oder geschrieben werden.</p><p id="c63d1653-12fc-4da0-b28d-0c0819388608" class="">Der Rückgabewert ist die Anzahl der tatsächlich gelesenen oder geschriebenen Bytes, oder im Fehlerfall <code>-1</code>. Wenn der Client die Verbindung schließt, gilt das als Dateiende und <code>read()</code> liefert <code>0</code> zurück.</p><p id="308697ae-38e3-4f09-8251-a705baf9e276" class="">Zusätzlich können für Sockets außerdem die FUnktionen <code>recv()</code> und <code>send()</code> verwendet werden. Diese erhalten zusätzlich noch einen vierten <code>flags</code>-Paramter, der dsa Verhalten beim Senden und Empfangen weiter beeinflusst. Insbesondere das Flag <code>MSG_WAITALL</code> ist beim Empfang für Binärprotokolle zu empfehlen, denn dieses sorgt dafür, dass <code>recv()</code> solange wartet, bis tatsächlich die angeforderte Anzahl an Bytes eingetroffen ist (oder ein Fehler auftritt / das Verbindungsende erreicht wurde).</p><h2 id="b0009863-9b67-45fd-98c1-21da39a6e6c3" class="">Beenden der Verbindung</h2><p id="462785c1-0a82-4832-bb88-5d96375b720d" class="">Nachdem die Daten übertragen sind, muss die Verbindung wieder geschlossen werden. Dies bewerkstelligen wir mit der Funktion <code>close()</code>:</p><pre id="e1049308-3f44-4e16-b175-57c939c73d0a" class="code"><code>#include &lt;unistd.h&gt;
+
+int close(int fd);</code></pre><h2 id="c0767782-d5c0-4deb-bd02-8fb3b4194ad7" class="">Der fertige Server</h2><p id="3fdfee93-5469-43c5-bb7a-10f338979444" class="">Nachdem wir unseren Server um eine Empfangsschleife und das Schließen der Verbinung erweitert haben, sieht der Code nun so aus:</p><pre id="8073009f-52bd-433a-9c2f-1e0c0a21a485" class="code"><code>#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;sys/socket.h&gt;
+#include &lt;netinet/in.h&gt;
+
+int main(void)
+{
+	const in_port_t port = 8111;
+
+	/* create socket */
+	const int listen_sock = socket(AF_INET, SOCK_STREAM, 0);
+	if(listen_sock &lt; 0)
+	{
+		perror(&quot;Could not create socket&quot;);
+		return 1;
+	}
+
+	/* prepare socket address structure */
+	struct sockaddr_in addr;
+	memset(&amp;addr, 0, sizeof(addr));			//any fields not set below must be zero
+	addr.sin_family = AF_INET;			//use IPv4
+	addr.sin_addr.s_addr = htonl(INADDR_ANY);	//accept connections from all addresses and networks
+	addr.sin_port = htons(port);			//set the port to use
+
+	/* bind the socket to the address specified above */
+	if(bind(listen_sock, (const struct sockaddr *)&amp;addr, sizeof(addr)) &lt; 0)
+	{
+		perror(&quot;Could not bind socket to address&quot;);
+		return 1;
+	}
+
+	/* mark socket to be accepting connections */
+	if(listen(listen_sock, backlog) &lt; 0)
+	{
+		perror(&quot;Could not mark socket to be accepting connections&quot;);
+		return 1;
+	}
+
+	/* wait for a client connection and accept it */
+	const int client_sock = accept(listen_sock, NULL, NULL);
+	if(client_sock &lt; 0)
+	{
+		perror(&quot;Could not accept client connection&quot;);
+		return 1;
+	}
+
+	/* now receive data and send it back, until the connection closes */
+	ssize_t bytes_read;
+	char buf[buf_size];
+	while((bytes_read = read(client_sock, buf, buf_size)) &gt; 0)
+	{
+		/* Process the received data. In our case, we
+		 * just print it and send it back. Note that we
+		 * probably do not get a null-termination, so be
+		 * careful here!
+		 */
+		write(STDOUT_FILENO, buf, (size_t)bytes_read);
+		write(client_sock, buf, (size_t)bytes_read);
+	}
+
+	if(bytes_read &lt; 0)
+	{
+		perror(&quot;Error receiving data&quot;);
+		return 1;
+	}
+
+	close(listen_sock);
+	close(client_sock);
+	return 0;
+}</code></pre><p id="26ac9f89-b88a-4e50-8706-944fcc3334f7" class="">Das Schließen der Sockets erfolgt hier, um Platz zu sparen, nur exemplarisch nach einem erfolgreichen Ablauf des Programmms. Das ist aber nicht weiter schlimm, denn beim Beenden eines Prozesses schließt das Betriebssystem ohnehine alle Dateien des Prozesses.</p><h1 id="d3b2cf36-0728-40dd-ab4f-b144f29cd519" class="">Client</h1><p id="1bd23dda-07bd-47bd-86c3-a09a2921dc5f" class="">Nachdem wir uns mit telnet odet telcat davon überzeugt habnem dass der Server wie gewünscht funktioniert, implementieren wir nun einen Client für unseren Server.</p><p id="153e944f-2e1e-4d7d-8339-112ce21ba7cd" class="">Der Client hat dabei folgenden Ablauf:</p><ol type="1" id="076da2f9-c86f-44ee-83ad-c3a27b2a163f" class="numbered-list" start="1"><li>Auflösen des Hostnamens in IP-Adressen</li></ol><ol type="1" id="475dceea-3855-40eb-a253-563c4ebc58fa" class="numbered-list" start="2"><li>Anfordern eines Sockets und Verbindungsaufbau</li></ol><ol type="1" id="d4d0436d-87e0-4820-8979-6dd9f5fe0f1d" class="numbered-list" start="3"><li>Datenaustausch mit dem Server</li></ol><h2 id="8ce508f9-73a7-4776-8ccd-dc706a91ad74" class="">Namensauflösung mit <code>getaddrinfo()</code></h2><p id="207420f5-774e-4485-bad9-7398af77ac4d" class="">Für den Verbindungsaufbau wird ein Socket-Adressstruktur benötigt, wie wir sie schon von der Implementierung des Servers kennen. Grundsätzlich könnten wir diese mit dem bisherigen Wissen auch von Hand ausfüllen. Dazu muss aber die IP-Adresse des Servers bekannt sein.</p><p id="fbef9871-0384-4d01-bcfc-b9870a4d4e91" class="">Als Anwender von netzwerkfähigen Programmen möchten wir nicht umständlich mit IP-Adressen hantieren, denn einen DNS-Namen wie beispielsweise <a href="http://www.rwu.de"><em>www.rwu.de</em></a> können wir uns besser merken als <em>141.69.5.100</em>, die dazugehörige IP-Adresse.
+Unser Client soll deshalb eine DNS-Namensauflösung durchführen und sozusagen den Namen in eine Socket-Adresstruktur umwandeln.</p><p id="c995e22f-33b7-45d6-81f7-d434a85f2900" class="">Dazu stellt Unix mehrere Funktionen zur Verfügung. Die allgemeinste (weil auch mit IPv6 funktionierende) und empfohlene heißt <code>getaddrinfo()</code> und kommt zusammen mit zwei weiteren Hilfsfunktionen:</p><pre id="5168fa6a-57e3-47ce-a6b6-aaa34cac1d1c" class="code"><code>#include &lt;sys/types.h&gt;
+#include &lt;sys/socket.h&gt;
+#include &lt;netdb.h&gt;
+
+int getaddrinfo(const char *node, const char *service,
+                const struct addrinfo *hints,
+                struct addrinfo **res);
+
+void freeaddrinfo(struct addrinfo *res);
+
+const char *gai_strerror(int errcode);</code></pre><p id="4873804a-0c11-4441-aefc-72ebff69afb0" class="">Der erste Parameter von <code>getaddrinfo()</code> ist der aufzulösende Hostname, also z.B.: <a href="http://www.rwu.de"><em>www.rwu.de</em></a>. Es kann auch eine IP-Adresse als String angegeben werden, sodass keine Namensauflösung erfolgt, sondern im Wesentlichen nur die Socket-Adressstruktur ausgefüllt wird.</p><p id="ca3da58a-cd81-43ea-bdc3-49ac63ee818e" class="">Über den zweiten Parameter wird der Port angegeben. Mit den Standardeinstellungen funktionieren sowohl textuelle Angaben wie <em>“http”</em>, als auch einfach Portnummern, die als String übergeben werden.</p><p id="566baec8-04dd-4842-b7c7-8afd7ef129a0" class="">Der dritte Parameter ist ein Zeiger auf ien <code>struct addrinfo</code>, deren Aufbau weiter unten erklärt wird. Über diesen Paramter wird beeinflusst, welches IP-Protokoll (4,, 6 oder beide) und ob TCP oder UDP verwendet werden soll, er stellt also eine Art FIlter für die Ergebnisse dar.</p><p id="5afb7317-0f54-411e-8e91-84e7939c4f14" class="">Der vierte Parameter liefert das Ergebnis. Es handelt sich um die Adresse eines Zeigers auf eine <code>struct addrinfo &#x27;gai_res</code> und übergibt dessen Adresse mit <code>&amp;gai_res</code> an <code>getaddrinfo()</code>, dann zeigt <code>gai_res</code> nach dem erfolgreichen Ende des Aufrufs auf das Ergebnis. Das Ergebnis muss mit <code>freeaddrinfo()</code> freigegeben werden, sobald es nicht mehr benötigt wird.</p><p id="d5a4cedd-001c-4889-8c2e-b43092b1d198" class="">Der Rückgabewert ist <code>0</code>, wenn akkes gut gegangen ist oder ansonsten ein Fehlercode, der an <code>gai_strerror()</code> übergeben werden kann, um eine Fehlermeldung zu erhalten</p><p id="0a469101-6dbc-4c7b-8eee-42edf08e82ac" class="">Die bei den Parametern <code>hints</code> und <code>res</code> verwendete Struktur hat folgenden Aufbau:</p><pre id="168d5c61-5b38-44d3-a93b-dbced177b15d" class="code"><code>struct addrinfo
+{
+    int              ai_flags;
+    int              ai_family;
+    int              ai_socktype;
+    int              ai_protocol;
+    socklen_t        ai_addrlen;
+    struct sockaddr *ai_addr;
+    char            *ai_canonname;
+    struct addrinfo *ai_next;
+};</code></pre><p id="7d9c94cd-66d4-4523-8ec7-86a67759ee57" class="">für die <code>hints</code> asl Eingabeparameter müssen nur die ersten vier Parameter ausgefüllt werden, der Rest muss mit <code>0</code> initialisiert werden:</p><p id="60eeee95-a3bd-4a07-b138-4456f5fd68d1" class=""><strong>ai_flags:</strong> Flags für die Namensauflösung. Häufig benutzt wird z.B. <code>AI_NUMERICSERV</code>, wodurch nur Zahlenstrings als service akzeptiert werden.</p><p id="ef6302f5-e600-4bfc-af10-fa5fb8259bf3" class=""><strong>ai_family:</strong> <code>AF_INET</code> für IPv4, <code>AF_INET6</code><em> </em>für IPv6 oder <code>AF_UNSPEC</code><em> </em>für beides (vgl. Anlegen des Sockets beim Server).</p><p id="3c1a4a03-2229-41dc-8af6-09155b9ce508" class=""><strong>ai_socktype:</strong> <code>SOCK_STREAM</code> für TCO, <code>SOCK_DGRAM</code> für UDP.</p><p id="8b6e87ad-fcf7-41ca-ac9a-2c298bd27d7f" class=""><strong>ai_protocol:</strong> Wie beim Aufruf von socket kann hier das Protokoll genauer spezifiziert werden. Normalerweise einfach <code>0</code></p><p id="5acf2c86-7c68-4d9d-a904-a3f722792839" class="">Das Ergebnis des Aufrufs ist eine verkettete Liste von passenden <code>sockaddr</code>-Strukturen, bei denen zusätzlich die weiteren Elemente ausgefüllt sind:</p><p id="55669c9a-85af-43b2-94ea-b22bf00cc2b7" class=""><strong>ai_addrlen:</strong> Die Länge der Socket-Adressstruktur. Diese wird beim Verbindungsaufbau benötigt.</p><p id="9ddfd902-0c5a-4b07-9ccf-966f10a9bcf9" class=""><strong>ai_addr:</strong> Ein Zeiger auf eine Socket-Adresstruktur, die eine zur Anfrage passende IP-Adresse enthält.</p><p id="056c1d4c-4a19-451a-b355-39881637299d" class=""><strong>ai_canonname:</strong> Wird hier nicht benötigt und nicht behandelt.</p><p id="9f857fae-3e1a-4d56-8628-86985be362c5" class=""><strong>ai_next:</strong> Ein Zeiger auf das nächste Ergebnis (verkettete Liste) oder <code>NULL</code> beim letzten Ergebnis.</p><h3 id="f41cdc1f-1db7-47e1-be09-c85ed586942a" class="">Beispiel zu <code>getaddrinfo()</code></h3><p id="4d072a14-456f-4440-aaa2-cb01e2566e7a" class="">Was in der Theorie furchbar kompliziert klingt, ist in unserem Fall glücklicherweise in der Praxis ganz einfach. Folgendes Codebeispiel zeigt, wie die Funktion typischerweise verwendet wird:</p><pre id="05c0ec3c-d142-417d-8870-9e0e46f51d77" class="code"><code>#include &lt;unistd.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;sys/socket.h&gt;
+#include &lt;netdb.h&gt;
+
+int main(int argc, char **argv)
+{
+	const char *port = &quot;8111&quot;;
+
+	if(argc != 2)
+	{
+		fprintf(stderr, &quot;usage: %s HOSTNAME\n&quot;, argv[0]);
+		return 1;
+	}
+
+	/* prepare hints for DNS name resolution via getaddrinfo */
+	struct addrinfo hints;
+	memset(&amp;hints, 0, sizeof(hints));
+	hints.ai_flags = AI_NUMERICSERV;	//port is given as a number, don&#x27;t perform service resolution
+	hints.ai_family = AF_INET;		//only return IPv4 addresses
+	hints.ai_socktype = SOCK_STREAM;	//only stream sockets
+	hints.ai_protocol = 0;			//same as the protocol parameter of socket (0=default)
+
+	/* resolve hostname into IP addresses */
+	struct addrinfo *gai_res;
+	const int gai_status = getaddrinfo(argv[1], port, &amp;hints, &amp;gai_res);
+	if(gai_status != 0)
+	{
+		fprintf(stderr, &quot;Could not resolve hostname: %s\n&quot;, gai_strerror(gai_status));
+		return 1;
+	}
+
+	//…
+	freeaddrinfo(gai_res);
+	//…
+	return 0;
+}</code></pre><p id="7a24cba3-3c9b-4500-97a6-868abdfc7584" class="">Gar nicht so schlimm, oder?</p><p id="eab3855a-e843-4b18-8f95-d33e728de03d" class="">Im nächsten Schritt benutzen wir nun die von <code>getaddrinfo()</code> erhaltenen Informationen, um den Client mit dem Server zu verbinden.</p><h2 id="f4e7eade-3884-4432-9f69-b79bc4e20b6f" class="">Verbindungsaufbau mit <code>connect()</code></h2><p id="96f3c7fb-67bc-4073-aaf0-e9238db72518" class="">Auch auf der Seite des Clients muss ein Socket erzeugt werden. Dies geschieht wieder mit der Funktion <code>socket()</code>, die bereits beim Server erklärt wurde. Als Übergabeparameter verwenden wir einfach die von <code>getaddrinfo()</code> gelieferten Werte aus der <code>struct addrinfo</code>.</p><p id="8c45b1c2-28e1-4c5b-ade6-1e1fc91715e3" class="">Das Gegenstück zu <code>bind()</code> auf der Seite des Servers heißt im Client <code>connect()</code>.
+Diese Funktion stellt über den Socket die tatsächliche Verbindung zum Server her und sieht folgendermaßen aus:</p><pre id="dd23a6b2-9e54-4781-baae-4e0dbef7d26d" class="code"><code>#include &lt;sys/types.h&gt;
+#include &lt;sys/socket.h&gt;
+
+int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen);</code></pre><p id="ede92ed4-d8b5-4ace-b9f2-6dc750081a22" class="">Der erste Parameter ist der Filedeskriptor unseres Sockets.</p><p id="1f6a511d-ebfe-43fd-a525-319ec9c48737" class="">Die beiden anderen Parameter sind die schon bekannte Socket-Adressstruktur und deren Länge, so wie wir sie von <code>getaddrinfo()</code> bekommen.</p><h3 id="617ebc49-6fa7-40f5-9263-966f449f531f" class="">Beispiel zum Verbindungsaufbau</h3><p id="b3d4d933-25e0-41dc-bd88-94045d67b02a" class="">Nachdem nun die nötigen Funktionen für den Verbindungsaufbau bekannt sind, ist die Implementierung nicht mehr schwer.</p><p id="a70c2373-0163-456f-967e-72a606e15218" class="">Zu beachten ist jedoch, dass die Namensauflösung mehrere Adressen zurückliefern kann. Falls der Verbindungsaufbau mit der ersten Adresse nicht klappt, heißt das nicht unbedingt, dass der Server nicht erreichbar ist, denn es kann sein, dass es mit einer der weiteren Adressen dann doch funktioniert. es müssen also alle Adressen durchprobiert werden - solange, bis entweder eine Verbindung steht, oder wir keine weiteren Adressen mehr haben. Falls wir danach immer noch keine Verbindungen haben, dann behandeln wir das als Fehler. Wenigstens könen wir uns dann aber nicht vorwerfen lassen, nicht unser Bestes getan zu haben…</p><p id="3b287914-d5ef-42e7-81c1-730b88d15586" class="">Wenn wir das berücksichtigen, dann können wir den Verbindungsaufbau wie folgt programmieren:</p><pre id="0b8e3476-b619-4bf3-b1ce-5a8338dd956e" class="code"><code>#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;sys/socket.h&gt;
+#include &lt;netdb.h&gt;
+
+int main(int argc, char **argv)
+{
+	const char *port = &quot;8111&quot;;
+	const size_t buf_size = 1024;
+
+	if(argc != 2)
+	{
+		fprintf(stderr, &quot;usage: %s HOSTNAME\n&quot;, argv[0]);
+		return 1;
+	}
+
+	/* prepare hints for DNS name resolution via getaddrinfo */
+	struct addrinfo hints;
+	memset(&amp;hints, 0, sizeof(hints));
+	hints.ai_flags = AI_NUMERICSERV;	//port is given as a number, don&#x27;t perform service resolution
+	hints.ai_family = AF_INET;		//only return IPv4 addresses
+	hints.ai_socktype = SOCK_STREAM;	//only stream sockets
+	hints.ai_protocol = 0;			//same as the protocol parameter of socket (0=default)
+
+	/* resolve hostname into IP addresses */
+	struct addrinfo *gai_res;
+	const int gai_status = getaddrinfo(argv[1], port, &amp;hints, &amp;gai_res);
+	if(gai_status != 0)
+	{
+		fprintf(stderr, &quot;Could not resolve hostname: %s\n&quot;, gai_strerror(gai_status));
+		return 1;
+	}
+
+	/* getaddrinfo might return more than one candidate. Try them one by one,
+	 * until we successfully establish a connection.
+	 */
+	int sock = -1;
+	for(const struct addrinfo *it=gai_res; it!=NULL &amp;&amp; sock==-1; it=it-&gt;ai_next)
+	{
+		sock = socket(it-&gt;ai_family, it-&gt;ai_socktype, it-&gt;ai_protocol);
+		if(sock &gt;= 0)
+		{
+			if(connect(sock, it-&gt;ai_addr, it-&gt;ai_addrlen) != -1)
+				fprintf(stderr, &quot;Connected.\n&quot;);
+			else
+			{
+				close(sock);
+				sock = -1;
+			}
+		}
+	}
+	freeaddrinfo(gai_res);
+	if(sock == -1)
+	{
+		fprintf(stderr, &quot;Unable to get a connection.\n&quot;);
+		return 1;
+	}
+
+	//…
+	return 0;
+}</code></pre><h2 id="9674a04a-e0d7-4c9c-b318-e5b47b856de4" class="">Der fertige Client</h2><p id="33dbf4af-0e99-4b82-8876-83a253b70d67" class="">Nachdem der Client sich mit dem Server verbunden hat, kann er die bereits bekannten Funktionen <code>read()</code>/<code>recv()</code> und <code>write()</code>/<code>send()</code> verwenden, um Daten vom Server zu empfangen bzw. um Daten zu diesem zu senden.</p><p id="c8ab35e0-1eb6-4c6b-8c1d-bf3081a73fe2" class="">Wir  vervollständigen unseren Client nun so, das er in einer Schleife…</p><ol type="1" id="e8ab290a-622d-4d6b-a1ec-a3870800048f" class="numbered-list" start="1"><li>… Daten von der Standardeingabe liest, solange das Dateiende (im Terminal Ctrl+D) noch nicht erreicht wurde,</li></ol><ol type="1" id="f2bf803e-9bb2-4d2a-9959-4586151042f0" class="numbered-list" start="2"><li>diese Daten an den Server schickt,</li></ol><ol type="1" id="fcaa1605-9cd9-4ca2-aea2-aab5704c6f73" class="numbered-list" start="3"><li>eine Antwort vom Server empfängt und</li></ol><ol type="1" id="ff224e69-adfa-45b1-9810-0da76b6adbe9" class="numbered-list" start="4"><li>diese auf der Konsole ausgibt.</li></ol><p id="c12b1697-2deb-4823-af59-d88a0485c718" class="">Damit sieht der fertige Client wie folgt aus:</p><pre id="358f9690-244c-430a-b4cf-fc302e5b7d33" class="code"><code>#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;sys/socket.h&gt;
+#include &lt;netdb.h&gt;
+
+int main(int argc, char **argv)
+{
+	const char *port = &quot;8111&quot;;
+	const size_t buf_size = 1024;
+
+	if(argc != 2)
+	{
+		fprintf(stderr, &quot;usage: %s HOSTNAME\n&quot;, argv[0]);
+		return 1;
+	}
+
+	/* prepare hints for DNS name resolution via getaddrinfo */
+	struct addrinfo hints;
+	memset(&amp;hints, 0, sizeof(hints));
+	hints.ai_flags = AI_NUMERICSERV;	//port is given as a number, don&#x27;t perform service resolution
+	hints.ai_family = AF_INET;		//only return IPv4 addresses
+	hints.ai_socktype = SOCK_STREAM;	//only stream sockets
+	hints.ai_protocol = 0;			//same as the protocol parameter of socket (0=default)
+
+	/* resolve hostname into IP addresses */
+	struct addrinfo *gai_res;
+	const int gai_status = getaddrinfo(argv[1], port, &amp;hints, &amp;gai_res);
+	if(gai_status != 0)
+	{
+		fprintf(stderr, &quot;Could not resolve hostname: %s\n&quot;, gai_strerror(gai_status));
+		return 1;
+	}
+
+	/* getaddrinfo might return more than one candidate. Try them one by one,
+	 * until we successfully establish a connection.
+	 */
+	int sock = -1;
+	for(const struct addrinfo *it=gai_res; it!=NULL &amp;&amp; sock==-1; it=it-&gt;ai_next)
+	{
+		sock = socket(it-&gt;ai_family, it-&gt;ai_socktype, it-&gt;ai_protocol);
+		if(sock &gt;= 0)
+		{
+			if(connect(sock, it-&gt;ai_addr, it-&gt;ai_addrlen) != -1)
+				fprintf(stderr, &quot;Connected.\n&quot;);
+			else
+			{
+				close(sock);
+				sock = -1;
+			}
+		}
+	}
+	freeaddrinfo(gai_res);
+	if(sock == -1)
+	{
+		fprintf(stderr, &quot;Unable to get a connection.\n&quot;);
+		return 1;
+	}
+
+	/* now send data and receive it back from the server */
+	char buf[buf_size];
+	ssize_t bytes_read_stdio, bytes_read_socket;
+	while((bytes_read_stdin = read(STDIN_FILENO, buf, buf_size)) &gt; 0)
+	{
+		if(write(sock, buf, (size_t)bytes_read_stdin) != bytes_read_stdin)
+		{
+			perror(&quot;Error sending message&quot;);
+			return 1;
+		}
+
+		bytes_read_socket = read(sock, buf, buf_size);
+		if(bytes_read_socket &lt; 0)
+		{
+			perror(&quot;Error receiving data&quot;);
+			return 1;
+		}
+
+		printf(&quot;response: &quot;);
+		fwrite(buf, 1U, bytes_read_socket, stdout);
+		fflush(stdout);
+	}
+
+	close(sock);
+	return 0;
+}</code></pre><p id="78872eb2-79aa-42d6-acee-9b40020ee242" class="">Auch hier schließen wir wieder am Schluss den Socket.</p><p id="4b53cc86-3715-43b5-9c2d-846daead6697" class="">Das war’s, wir sind fertig!</p><p id="aef3f2c7-7712-4351-8f18-33d9e8c8c7bd" class="">
+</p></div></article></body></html>

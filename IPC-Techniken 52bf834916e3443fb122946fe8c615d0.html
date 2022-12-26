@@ -1,0 +1,843 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>IPC-Techniken</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	text-indent: -1.7em;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-opaquegray { background-color: rgba(255, 255, 255, 0.0375); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="52bf8349-16e3-443f-b122-946fe8c615d0" class="page sans"><header><h1 class="page-title">IPC-Techniken</h1></header><div class="page-body"><h2 id="98ccda28-55b8-4b3f-8a4f-57cdc6fbeceb" class="">Kommunikation und Synchronisation zwischen Prozessen und Threads</h2><h1 id="7b52decd-5603-4e76-9037-e97f8cce22bf" class="">Einführung</h1><h2 id="53157510-20a0-4af1-a22f-0d6a17b60158" class="">Fragestellung</h2><ul id="0163ed0a-b35e-410a-8884-b6b1ad381a2c" class="bulleted-list"><li style="list-style-type:disc"><strong>Kommunikation</strong><ul id="3f803c44-c558-4cfe-8f27-007b196fc58d" class="bulleted-list"><li style="list-style-type:circle">Wie können Threads untereinander Daten austauschen?</li></ul><ul id="0c31255f-566e-41d9-93c4-ac82e7e70fca" class="bulleted-list"><li style="list-style-type:circle">Wie können Prozesse <strong>trotz Speicherschutz</strong> untereinander Daten austauschen?</li></ul></li></ul><ul id="250c8426-57d2-4ebe-8eaf-247c82be999b" class="bulleted-list"><li style="list-style-type:disc"><strong>Synchronisation</strong><ul id="086e707f-98c6-45b6-8ac5-841304543e6d" class="bulleted-list"><li style="list-style-type:circle">Wie verhindere ich zeitliche Wettläufe (Race-Conditions) beim Zugriff auf gemeinsame Daten?</li></ul><ul id="2175e4b4-225e-4df5-9f53-6b63135f2c9e" class="bulleted-list"><li style="list-style-type:circle">Wie können sich Prozesse und Threads über Ereignisse informieren?</li></ul></li></ul><h2 id="8fab50ae-9759-4907-bbf6-5e127435f238" class="">IPC-Techniken unter Linux / Unix</h2><ul id="c453f7af-2e56-404d-b2b3-eca49ed427a3" class="bulleted-list"><li style="list-style-type:disc"><strong>Gemeinsame Daten</strong><ul id="42e22b1f-6e53-4fc8-a9ae-5d36068f1336" class="bulleted-list"><li style="list-style-type:circle"><strong>Zwischen Threads eines Prozesses:</strong> Gemeinsamer Adressraum</li></ul><ul id="b220cda1-5935-4aa1-9850-8c62bfe37e0d" class="bulleted-list"><li style="list-style-type:circle"><strong>Zwischen unterschiedlichen Prozessen:</strong> Shared Memory Objekte</li></ul></li></ul><ul id="2a022f90-0dab-4a8b-8fc2-ba8172ab5490" class="bulleted-list"><li style="list-style-type:disc"><strong>Zeitliche Synchronisation</strong><ul id="46d0a835-071a-45fe-a19d-c1b06e9c41ad" class="bulleted-list"><li style="list-style-type:circle">Mutex-Objekte, Semaphore, Signale</li></ul></li></ul><ul id="71ae48ff-d95d-4805-8de8-66b098cc06ce" class="bulleted-list"><li style="list-style-type:disc"><strong>Datenkanäle</strong><ul id="8442be6b-0e8a-466a-a3d2-180d40f861e5" class="bulleted-list"><li style="list-style-type:circle">Pipes, Message Queues</li></ul><ul id="97bc105b-8605-4d6a-861d-b526def22760" class="bulleted-list"><li style="list-style-type:circle">Sockets (netzwerkfähig)</li></ul></li></ul><h1 id="1810e8a7-c9fa-441d-b0a9-d00b03dbcd0b" class="">Gemeinsame Daten</h1><h2 id="1ace5f8e-de08-4238-90b9-cfc4d0629a67" class="">Gemeinsamer Addressraum von Threads eines Prozesses</h2><h3 id="c3cb26c4-17e8-4fc3-9b2b-d318566a9d5c" class="">Zur Erinnerung…</h3><p id="3064fb3a-df5c-46ae-89d4-b8bac22ba4e7" class=""><strong>Threads des selben Prozesses teilen sich den Adressraum!</strong></p><p id="69c77b1a-01d7-4000-a83c-2e69f7d86164" class="">Nutzen wir doch das aus…</p><h3 id="84953fc5-db60-4f2f-87ce-03e72c29f823" class="">Globale Variablen im Datensegment</h3><pre id="6a82bf56-ac11-4dee-835c-51d5b59b5ce5" class="code"><code>#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;pthread.h&gt;
+
+static char global_data[256]
+
+static void *thread_func(void *dummy)
+{
+		puts(global_data);
+		return dummy;
+}
+
+int main(void)
+{
+		strcpy(golbal_data, &quot;Hello, World!&quot;);
+		
+		pthread_t tid;
+		if(pthread_create(&amp;tid , NULL, thread_func , NULL) != 0)
+				return 1;
+	
+	pthread_join(tid, NULL);
+}</code></pre><h3 id="c7b76882-fa3e-4ce8-bb43-4d97aa618544" class="">Übergabe eines Heap-Pointers als Argument</h3><pre id="cf33e38f-e0a3-4a08-ba23-fc4933cff98c" class="code"><code># include &lt;stdio.h&gt;
+# include &lt;stdlib.h&gt;
+# include &lt;string.h&gt;
+# include &lt;pthread.h&gt;
+
+static void *threadfunc(void * arg )
+{
+		puts((const char *)arg);
+		return arg ;
+}
+
+int main ( void )
+{
+		char * buffer = malloc(256);
+		if(buffer == NULL)
+				return 1;
+		strcpy(buffer , &quot;Hello , World !&quot;);
+
+		pthreadttid;
+		if(pthreadcreate(&amp;tid , NULL, threadfunc , buffer ) != 0)
+				return 1;
+
+		pthreadjoin(tid , NULL);
+		free(buffer);
+}</code></pre><h2 id="b859f2da-be99-4aea-85ff-8524bb1c151d" class="">Shared Memory  Objekte</h2><h3 id="af1a3101-644b-4779-bbb4-5937baf88d2d" class="">Gemeinsame Daten zwischen verschiedenen Prozessen</h3><p id="400d7232-d3ea-4e28-8e23-47117b8893ff" class=""><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>“Und wenn ich verschiedene Prozesse habe - geht das dann auch?”</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></p><p id="2f75cadf-4321-4517-95fd-fdbc94ec0672" class="">Ja, wenn alle es wollen…</p><h3 id="58de17ba-75bb-469b-b8f1-4e9e1a4a34bb" class="">Shared Memory</h3><ul id="3f85caea-d59d-4dec-a179-6f60386fb95d" class="bulleted-list"><li style="list-style-type:disc"><strong>Idee: Mehrere Prozesse teilen sich (freiwillig) einen physikalischen Speicherbereich</strong><figure id="53cb432e-4a9e-494e-956c-aa07bbad16e5" class="image"><a href="Untitled%2030.png"><img style="width:403px" src="Untitled%2030.png"/></a></figure></li></ul><ul id="5967a120-4f3b-4d99-bf83-82a020016167" class="bulleted-list"><li style="list-style-type:disc"><strong>Vorgehensweise</strong><ol type="1" id="09f9f9f5-2eea-44da-97cb-00a8c0bacceb" class="numbered-list" start="1"><li>Shared-Memory öffnen / erzeugen:
+<code>shm_open()</code> , ggf. <code>ftruncate()</code></li></ol><ol type="1" id="1338d9d3-12e9-44d8-8173-45f257d5b122" class="numbered-list" start="2"><li>In den Adressraum mappen: <code>mmap()</code></li></ol><ol type="1" id="1f1f3b0b-7e61-4e68-9d68-154db0110132" class="numbered-list" start="3"><li>…</li></ol><ol type="1" id="893568aa-804c-41cc-a4d4-13591112d2af" class="numbered-list" start="4"><li>Mappping entfernen: <code>munmap()</code></li></ol><ol type="1" id="bc655319-4671-440d-8de2-d4b3c6b091e0" class="numbered-list" start="5"><li>Shared Memory schließen, löschen: <code>close()</code>, <code>shm_unlink()</code></li></ol></li></ul><h1 id="04de0e3c-d69e-4323-85dc-1c69162b7103" class="">Zeitliche Synchronisation</h1><h2 id="f8b4c7f5-b17c-4523-9ad7-a0b355aa62a6" class="">Mutex-Objekte</h2><figure id="5e55793c-7f52-4ff2-9eb3-d4ade6817225" class="image"><a href="Untitled%2031.png"><img style="width:1149px" src="Untitled%2031.png"/></a></figure><figure id="45d48a11-dba0-4e2c-a69a-f8b8b5595144" class="image"><a href="Untitled%2032.png"><img style="width:336px" src="Untitled%2032.png"/></a></figure><h3 id="4e2bb702-004c-4d6b-9365-6168beca4870" class="">Synchronisation notwendig!</h3><ul id="28e22b73-8cb9-4963-a812-1ee40bdb6bed" class="bulleted-list"><li style="list-style-type:disc"><strong>Wann?</strong><ul id="ca30523d-d388-480f-a21c-b2115aa7ff71" class="bulleted-list"><li style="list-style-type:circle">Wenn die Gefahr besteht, dass mehrere Prozesse oder Threads <strong>gleichzeitig</strong> auf gemeinsame Daten zugreifen und <strong>mindestens einer davon schreibt</strong>, müssen <strong>alle Lese- und Schreibzugriffe</strong> auf diese Daten durch geeignete Machanismen <strong>synchronisiert</strong> werden!</li></ul></li></ul><ul id="b0c1a8dc-d7c3-4bdb-ac9d-25b5212be662" class="bulleted-list"><li style="list-style-type:disc"> <strong>Zwischen Threads:</strong> Mutex</li></ul><ul id="86ea2750-ac9e-47a8-ab9b-6470b35e217f" class="bulleted-list"><li style="list-style-type:disc"><strong>Zwischen Prozessen:</strong> (benannter) Semaphor, oder Mutex mit gesetztem process-shared Attribut in Shared Memory Object</li></ul><h3 id="f02cea24-0f41-4840-89ce-0c4b6c87382a" class="">Initialisierung</h3><ul id="d63c2bf5-687b-405c-afa3-36c93ae1e4d9" class="bulleted-list"><li style="list-style-type:disc"><strong>Dynamische Initialisierung (allgemein)</strong><ul id="ac742657-3866-49a2-bc53-7913c7e82867" class="bulleted-list"><li style="list-style-type:circle"><mark class="highlight-blue">int </mark>pthread_mutex_init(pthread_mutex_t *mutex, <mark class="highlight-blue">const </mark>pthread pthread_mutexattr_t *attr);</li></ul><ul id="8488944e-2a5c-4a34-9ee9-49870274fa4e" class="bulleted-list"><li style="list-style-type:circle"><strong>mutex</strong> Zeiger auf den zu initialisierenden Mutex</li></ul><ul id="44e35a50-0a80-435f-92a5-343a184e875e" class="bulleted-list"><li style="list-style-type:circle"><strong>attr</strong> Zeiger auf Attribute des Mutex (siehe Man-PAge), bei uns <code>NULL</code></li></ul></li></ul><ul id="db95ee3f-96c9-420a-a627-c1aba9057dee" class="bulleted-list"><li style="list-style-type:disc"><strong>Statische Initialisierung (einfacher)</strong><ul id="2526c070-9569-4606-b5a1-5c58ebc8f4af" class="bulleted-list"><li style="list-style-type:circle"><mark class="highlight-blue">int</mark> pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;</li></ul></li></ul><h3 id="913b0002-671a-47c5-9f44-f8ffef407001" class="">Sperren und Entsperren</h3><ul id="9dd63d15-ac21-42d2-a09e-dcbf7207f601" class="bulleted-list"><li style="list-style-type:disc"><strong>Sperren</strong><ul id="e3dfca77-ac1d-4a70-a440-34eec1d85586" class="bulleted-list"><li style="list-style-type:circle"><mark class="highlight-blue">int </mark>pthread_mutex_lock(pthread_mutex_t *mutex);</li></ul></li></ul><ul id="98767ad5-1671-4c7c-be74-60094a9343f5" class="bulleted-list"><li style="list-style-type:disc"><strong>Zugriff auf vom Mutex geschützte Daten</strong><ul id="0686c2f0-882f-4958-b3d4-b6e7f0754134" class="bulleted-list"><li style="list-style-type:circle"><code>//Whatever</code></li></ul></li></ul><ul id="9b2d149c-872c-4e21-aa9e-57988e9cbf99" class="bulleted-list"><li style="list-style-type:disc"><strong>Entsperren</strong><ul id="aa4f78e6-a5c3-485b-9fc2-e7bada5ae8e2" class="bulleted-list"><li style="list-style-type:circle"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue">int</mark></mark></mark></mark> pthread_mutex_unlock(pthread_mutex_t *mutex);</li></ul></li></ul><h3 id="b1cb5443-262c-4697-acae-1131499b2c56" class="">Zerstörung</h3><ul id="b2da8a03-b6e2-4ca7-b45f-aacb8100a8ba" class="bulleted-list"><li style="list-style-type:disc"><strong>Zerstörung</strong><ul id="e8fbc57b-ccf6-4342-8064-f27ea0af23a2" class="bulleted-list"><li style="list-style-type:circle"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue">int</mark></mark></mark> pthread_mutex_destroy(pthread_mutex_t *mutex);</li></ul></li></ul><h2 id="313c3f5b-738c-4f44-9f3b-f8ac40eaa396" class="">Anwendungsbeispiel</h2><pre id="0715d1a4-c996-47a3-87e6-5f9f026fb24f" class="code"><code># include &lt;stdio.h&gt;
+# include &lt;string.h&gt;
+# include &lt;pthread.h&gt;
+
+static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+
+void *thread_func(void *arg)
+{
+		for(;;)
+		{
+				pthread_mutex_lock(&amp;mutex);
+				printf(&quot;%s\n&quot;, (const char *)arg);
+				pthread_mutex_unlock(&amp;mutex);
+		}
+		return arg;
+}
+
+int main(void)
+{
+		const char *strs [] = { &quot;Hello!&quot;, &quot;Servus!&quot;, &quot;Hi!&quot;, &quot;Moin!&quot; };
+		const size_t num_strs = sizeof(strs)/sizeof(*strs);
+		char buf[16] = &quot; &quot;;
+		pthread_t thread;
+
+		if(pthread_create(&amp;thread, NULL, thread_func , buf != 0)
+				return 1;
+
+		size_t i=0U;
+		for(;;)
+		{
+					pthread_mutex_lock(&amp;mutex);
+					strcpy(buf, strs[i]);
+					pthread_mutex_unlock(&amp;mutex);
+					i = (i+1U) % num_strs;
+		}
+}</code></pre><h2 id="7db75783-8ecb-46c2-bdb6-9542339acf2e" class="">Semaphore</h2><h3 id="00224654-bb52-4c39-99af-5ebe0ef36e71" class="">Fragestellung</h3><ul id="4a34c34f-d167-42f0-ae4e-75e7f55879b7" class="bulleted-list"><li style="list-style-type:disc">Wie kann ich einen Thread auf eine Freigabe durch einen anderen Thread warten lassen?</li></ul><ul id="f403d1d1-f423-4813-966f-0d5928eab927" class="bulleted-list"><li style="list-style-type:disc">Wie kann ein Thread einen anderen Thread darüber informieren, dass ein bestimmtes Ereignis eingetreten ist?</li></ul><ul id="e8c187f5-e898-4970-acec-91e21c085e0d" class="bulleted-list"><li style="list-style-type:disc">Was ist, wenn mehrere Threads auf das Ereignis warren und pro Auftreten des Ereignisses nur ein Thread weiter laufen darf?</li></ul><h3 id="92d378a7-7220-46ec-bc9d-ea79dcbde249" class="">Beispiel: Ein Produzent, zwei Konsumenten</h3><figure id="5fcc653b-c0dc-4830-bb89-8fea4da67522" class="image"><a href="Untitled%2033.png"><img style="width:952px" src="Untitled%2033.png"/></a></figure><h3 id="76e7c69a-b7e3-4b61-bf37-d02907e28ea6" class="">Erster, nicht funktionierender Ansatz</h3><ul id="40b92ff3-519d-49a1-b13a-0195cb709bc6" class="bulleted-list"><li style="list-style-type:disc"><strong>Zähler für Ereignisse</strong><pre id="b7c92c6e-737d-4ad9-bee2-805f29480ea0" class="code"><code>static volative unsigned sem = 0U; //pseudo-semaphore, does not work correctly!</code></pre></li></ul><ul id="75593191-b002-4375-9b9f-62a27a6bcb12" class="bulleted-list"><li style="list-style-type:disc"><strong>Produzent</strong><pre id="a166ed19-5b9a-469e-84e0-24580b974723" class="code"><code>static void producer(void)
+{
+		unsigned seed = 4711U;
+		for(;;)
+		{
+				//wait for random time between 0.1s und 2s, the generate event
+				mdelay(random_between(100U, 2000U, &amp;seed));
+				++sem;
+		}
+}</code></pre></li></ul><ul id="d1038103-d668-4aec-92da-fb1fd5909072" class="bulleted-list"><li style="list-style-type:disc"><strong>Konsument</strong><pre id="f8814a7c-da6f-4678-ae23-18a51f660853" class="code"><code>static void *consumer(void *arg)
+{
+		for(;;)
+		{
+				while(sem == 0U)
+				{
+						;
+				--sem
+				printf(&quot;%s woke up!\n!&quot;, (char const *)arg);
+		}
+		return NULL;
+}</code></pre></li></ul><ul id="38eaee80-6e7e-4d2f-95bf-e6f53c225392" class="bulleted-list"><li style="list-style-type:disc"><strong>Probleme</strong><ul id="7c1bb85e-9251-47a3-b531-d92d63c9aed0" class="bulleted-list"><li style="list-style-type:circle">Busy-Waiting statt passivem Warten verschwendet Rechenzeit</li></ul><ul id="55e2e7fb-e05f-4987-8b66-91aa5ea834e7" class="bulleted-list"><li style="list-style-type:circle">Abbruch der Schleife und Herunterzählen der Variable nicht atomar!
+<style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>⇒</mo></mrow><annotation encoding="application/x-tex">⇒</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">⇒</span></span></span></span></span><span>﻿</span></span> <strong>Race-Condition!</strong></li></ul></li></ul><h3 id="0867a9ff-f5c9-4099-8241-f5dd68afd550" class="">Warum Race-Condition?</h3><ul id="971f6f90-4049-455d-8108-445bed65c201" class="bulleted-list"><li style="list-style-type:disc"><strong>Was macht der Compiler daraus (Pseudocode Consumer)?</strong><pre id="3bb825c0-d73f-4163-8f8b-68c905e7af1a" class="code"><code>loop:
+reg = sem;                 //load variable from memory into register
+if(reg == 0) goto loop;    //loop, if register is zero
+reg = sem;                 //load variable again (volatile)
+reg = reg - 1              //decrement register
+sem = reg;                 //store register value in memory</code></pre><figure id="28f8f97c-90ee-4c40-baa1-a069c4c727fc" class="image"><a href="Untitled%2034.png"><img style="width:1484px" src="Untitled%2034.png"/></a></figure><figure id="ea6ce3dd-d43c-404c-9744-085507e91ad1" class="image"><a href="Untitled%2035.png"><img style="width:1484px" src="Untitled%2035.png"/></a></figure><p id="3948d8bc-0b8f-48f3-a3e7-3215958c8af1" class=""><strong>Gleichartige Probleme auch mit Producer!</strong></p></li></ul><ul id="e4a948e9-92d2-4fff-b97f-ac2950193d1d" class="bulleted-list"><li style="list-style-type:disc"><strong>Abhilfe</strong><p id="013840ac-4c98-4d10-8025-10cf872d312b" class=""><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>⇒</mo></mrow><annotation encoding="application/x-tex">⇒</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">⇒</span></span></span></span></span><span>﻿</span></span> Warten und Dekrement als atomare Einheit</p><p id="afb7227c-c4f5-478c-8049-2c7eb6b05d04" class=""><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>⇒</mo></mrow><annotation encoding="application/x-tex">⇒</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">⇒</span></span></span></span></span><span>﻿</span></span> Inkrement und Freigabe als atomare Einheit</p><p id="293d435e-31af-4db8-811f-78999e551073" class=""><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>⇒</mo></mrow><annotation encoding="application/x-tex">⇒</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">⇒</span></span></span></span></span><span>﻿</span></span> Semaphor</p></li></ul><h3 id="171ca51b-e490-49d1-9c42-dcd5aa2c9aa5" class="">Beispiel mit Semaphor</h3><ul id="761245ec-9556-45cd-b767-fb0285f13f84" class="bulleted-list"><li style="list-style-type:disc"><strong>Semaphor als modulglobale Variable</strong><pre id="26fb3f2b-b506-4922-8207-a36925d1adc4" class="code"><code>#include &lt;semaphore.h&gt;
+static sem_t sem;</code></pre></li></ul><ul id="9770354f-66b7-427e-92b1-8a0a992ad15c" class="bulleted-list"><li style="list-style-type:disc"><strong>Initialisierung</strong><pre id="4dc4ce2b-f1ce-489d-ac1d-dc052707983d" class="code"><code>if(sem_init(&amp;sem, 0, 0U) != 0)
+{
+		perror(&quot;Cannot initialize semaphore&quot;);
+		return 1;
+}</code></pre></li></ul><ul id="454c7f6e-dbb1-466a-a302-a3ebe4ae8e90" class="bulleted-list"><li style="list-style-type:disc"><strong>Initialisierung (allgemein)</strong><pre id="95592edc-f313-4a0a-8ae7-f5cb629cc6c5" class="code"><code>int sem_init(sem *sem, int pshared, unsigned int value);</code></pre><ul id="106ad460-5278-4363-8c2f-2cd780fea6a0" class="bulleted-list"><li style="list-style-type:circle"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue">sem </mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark></mark>Zeiger auf den zu initialisierenden Semaphor</li></ul><ul id="9c8434df-6766-43ee-a267-7efe235206b5" class="bulleted-list"><li style="list-style-type:circle"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue">pshared</mark></mark></mark></mark> Ungleich 0, wenn <strong>zwischen Prozessoren</strong> geteilt, sonst 0</li></ul><ul id="02d02aa9-df95-484d-85af-2308972f438b" class="bulleted-list"><li style="list-style-type:circle"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue">value</mark></mark></mark></mark></mark> Startwert</li></ul></li></ul><ul id="c209bc4c-6927-4132-86d3-533a141882c9" class="bulleted-list"><li style="list-style-type:disc"><strong>Produzent</strong><pre id="cab3df43-abc3-4968-b297-e07df8ccdcf4" class="code"><code>static void producer(void)
+{
+		unsigned seed = 4711U;
+		for(;;)
+		{
+				//wait for random time between 0.1s und 2s, the generate event
+				mdelay(random_between(100U, 2000U, &amp;seed));
+				puts(&quot;Waking consumer!&quot;);
+				sem_post(&amp;sem)
+		}
+}</code></pre></li></ul><ul id="a3979253-5313-4972-a5df-78ad9e36e0f5" class="bulleted-list"><li style="list-style-type:disc"><strong>Konsument</strong><pre id="5d50201a-697e-46d5-82f2-5c94bc19d2b4" class="code"><code>static void *consumer(void *arg)
+{
+		for(;;)
+		{
+				sem_wait(&amp;sem);
+				printf(&quot;%s woke up!\n&quot;, (const char *)arg);
+		}
+
+		return NULL;
+}</code></pre></li></ul><ul id="e3544e95-b266-457e-9b7b-13c88d5de222" class="bulleted-list"><li style="list-style-type:disc"><strong>Zerstörung</strong><pre id="adbb20de-e91c-4b06-871f-e55d8ededcff" class="code"><code>sem_destroy(&amp;sem);</code></pre></li></ul><ul id="0da11aac-4023-4e81-b794-0e683bc2a51d" class="bulleted-list"><li style="list-style-type:disc"><strong>Verbesserungen</strong><ul id="bc734748-ccbc-43ad-b9de-163b71c6daa1" class="bulleted-list"><li style="list-style-type:circle">Kein Busy-Waiting mehr!</li></ul><ul id="563dad63-ba1c-4263-9f3f-8b4e8e3838e5" class="bulleted-list"><li style="list-style-type:circle">Race-Condition behoben, <code>sem_wait()</code> und <code>sem_post()</code> sind atomar!</li></ul></li></ul><h3 id="15fd96e4-9471-4896-a9c3-5aafba5d5d87" class="">In aller Kürze: Benannter Semaphore</h3><ul id="f8e7a76a-0429-4e96-8e1c-dbbe1482e5bc" class="bulleted-list"><li style="list-style-type:disc"><strong>Bennante Semaphore</strong><ul id="8d8cf76f-59f5-4a8f-87e0-6579afe46837" class="bulleted-list"><li style="list-style-type:circle">Über Prozessgrenzen hinweg ggf. einfacher (kein Shared Memory Objekt nötig)</li></ul><ul id="e9feda46-3953-4b2c-9570-68247da6acdd" class="bulleted-list"><li style="list-style-type:circle">Neue Funktionen: <code>sem_open()</code>, <code>sem_close()</code>, <code>sen_unlink()</code></li></ul><ul id="02cbbed7-c471-4066-a7e3-c153b516161a" class="bulleted-list"><li style="list-style-type:circle"><code>sem_post()</code>, <code>sem_wait()</code> gleich</li></ul><ul id="e3115b05-bcc0-41c4-9238-5cfd07876479" class="bulleted-list"><li style="list-style-type:circle">Näheres siehe Man-Pages</li></ul></li></ul><h2 id="1c53fe1b-0322-41f7-a99a-a27806d9c9e4" class="">Signale</h2><h3 id="b77fde74-6f75-40aa-a3d5-15e4c6ce395b" class="">Was sind Signale?</h3><ul id="76b29090-7130-49a5-a548-21706ca49d14" class="bulleted-list"><li style="list-style-type:disc"><strong>Allgemein</strong><ul id="b0c6a72b-09e0-429f-883a-c113fea00d8f" class="bulleted-list"><li style="list-style-type:circle">(Asynchrone) Systemnachrichten an laufenden Prozess oder Thread</li></ul><ul id="2b87fb75-ce6c-4e77-9cbf-76e64ba4ffc9" class="bulleted-list"><li style="list-style-type:circle">Ausgelöst von:<ul id="8bd49216-a944-46aa-89bd-7b82a84b98fe" class="bulleted-list"><li style="list-style-type:square">Betriebssystem selbst (z.B. bei Speicherzugriffsfehler)</li></ul><ul id="1212c908-fa86-4da9-a339-0df3650f33b5" class="bulleted-list"><li style="list-style-type:square">Anderem Prozess (z.B. durch Kommando <code>kill</code>)</li></ul><ul id="e8138f6a-a2eb-443c-abf6-eeffb9cab1d6" class="bulleted-list"><li style="list-style-type:square">Eigenem Prozess (z.B. durch Funktion <code>raise()</code>)</li></ul></li></ul><ul id="d3fe5431-7862-4af7-b46e-7d61df77fc32" class="bulleted-list"><li style="list-style-type:circle">vgl. Interrupt</li></ul></li></ul><ul id="a40b28d9-d40a-4cdc-b222-5458ba7532b9" class="bulleted-list"><li style="list-style-type:disc"><strong>Beispiele</strong><table id="a645dc94-43b4-49e1-a1e4-8132f5ecc37e" class="simple-table"><tbody><tr id="3737d612-e399-44b0-9476-af09b8c57dd8"><td id="}^wG" class=""><strong>Signal</strong></td><td id="[d|z" class=""><strong>Beschreibung</strong></td><td id="t\c]" class=""><strong>Standardreaktion</strong></td><td id=";_OV" class=""><strong>Abfangbar</strong></td></tr><tr id="cdbb5e39-f092-4691-b911-a85091995de1"><td id="}^wG" class="">SIGINT</td><td id="[d|z" class="">Ctrl+C auf der Konsole gedrückt</td><td id="t\c]" class="">Abbruch</td><td id=";_OV" class="">ja</td></tr><tr id="c079dcb2-3d43-4f9c-9389-43e28446f81f"><td id="}^wG" class="">SIGTERM</td><td id="[d|z" class="">&quot;Bitte beende dich!”</td><td id="t\c]" class="">Abbruch</td><td id=";_OV" class="">nein</td></tr><tr id="d73f9e3a-cfb6-4e9e-8c75-0462550cfbd3"><td id="}^wG" class="">SIGKILL</td><td id="[d|z" class="">&quot;Stirb du…”</td><td id="t\c]" class="">Abbruch</td><td id=";_OV" class="">nein</td></tr><tr id="9bc24628-a968-42ba-a50d-de80f09e0a11"><td id="}^wG" class="">SIGSTOP</td><td id="[d|z" class="">&quot;Warte mal…”</td><td id="t\c]" class="">Pausieren</td><td id=";_OV" class="">nein</td></tr><tr id="4dc21e62-c828-4d93-b70d-a11a4b516da6"><td id="}^wG" class="">SIGCONT</td><td id="[d|z" class="">&quot;Mach weiter!”</td><td id="t\c]" class="">Fortsetzen</td><td id=";_OV" class="">ja</td></tr><tr id="21170baf-ae7e-4a30-a915-c1b31b578b66"><td id="}^wG" class="">SIGSEGV</td><td id="[d|z" class="">Speicherzugriffsfehler</td><td id="t\c]" class="">Abbruch</td><td id=";_OV" class="">ja</td></tr></tbody></table><p id="bb8f8fd0-98b9-47ac-a0c8-fa17cff93394" class=""><strong>Weitere Signale siehe </strong><strong><code>man 7 signal</code></strong></p></li></ul><h3 id="92b8558f-0313-4c22-abdc-8e54bde52e4e" class="">Zwei Arten, auf Signale zu reagieren</h3><ul id="3c1ac714-ff8a-424a-8737-0180b6962ec6" class="bulleted-list"><li style="list-style-type:disc"><strong>Einrichten von Signalhandlern</strong><ul id="7df117d3-fe79-4837-b705-2e18092224db" class="bulleted-list"><li style="list-style-type:circle">Signalhandler mit <code>sigaction()</code> (oder veraltet <code>signal()</code>) registrieren</li></ul><ul id="a2c0ce10-4cb8-44cc-b91a-8f4395cbd5c0" class="bulleted-list"><li style="list-style-type:circle">Regulärer Programmablauf wird nun durch registrierten Signalhandler unterbrochen (<strong>asynchron</strong>), sobald das Signal eintrifft</li></ul></li></ul><ul id="9b1c60f7-ef51-4b77-9322-0f5d7968fad2" class="bulleted-list"><li style="list-style-type:disc"><strong>Synchrones Warten auf Signale</strong><ul id="2d45fc1b-9e69-458e-8e98-7cf61dbe2dff" class="bulleted-list"><li style="list-style-type:circle">Deaktivieren des asynchronen Signalmechanismus mit <code>pthread_sigmask()</code></li></ul><ul id="0fbd0870-778a-4835-b088-c4717cced927" class="bulleted-list"><li style="list-style-type:circle">Passives Warten (<strong>synchron</strong>) auf Signale mit <code>sigwait()</code></li></ul><ul id="5c8943ac-f853-47fa-a12e-9b3a3cc02657" class="bulleted-list"><li style="list-style-type:circle">Oft einfacher</li></ul></li></ul><h3 id="32084e6c-038b-4963-8c70-f1c66dc27795" class="">Fehlerhaftes Beispiel zu Signalhandlern</h3><ul id="322aed47-19fe-4f21-8d9d-811905d36b7f" class="bulleted-list"><li style="list-style-type:disc"><strong>Eine harmlos aussehende Funktion…</strong><pre id="16cf5a75-c1df-4eb0-b41d-b78306814946" class="code"><code>static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+static void non_async_safe_function(void)
+{
+	pthread_mutex_lock(&amp;mutex);
+	sleep(10U); //pretend to do some work
+	pthread_mutex_unlock(&amp;mutex);
+}</code></pre></li></ul><ul id="ff6fb8cc-012c-4869-9a71-9311ef307115" class="bulleted-list"><li style="list-style-type:disc"><mark class="highlight-red"><strong>Signalhandler (falsch)</strong></mark><pre id="8bfd28cd-0540-4dfe-a937-8a8670894bdf" class="code"><code>static void signal_handler(int sig)
+{
+	(void)sig;
+	non_async_safe_function(); //NEVER DO SOMETHING LIKE THIS!
+	_exit(EXIT_FAILURE);
+}</code></pre></li></ul><ul id="15e17b79-283d-4e9f-ac0a-e31f89484f8f" class="bulleted-list"><li style="list-style-type:disc"><strong>Registrierung des Signalhandlers</strong><pre id="b16076a0-05e9-4de9-9064-88f6e5e37f1e" class="code"><code>static void register_signal_handler(void)
+{
+	sigset_t mask;
+	sigemptyset(&amp;mask);
+	
+	const struct sigaction action = {
+		.sa_handler = signal_handler , 
+		.sa_mask = mask ,
+		.sa_flags = 0
+	};
+	
+	if(sigaction(SIGINT, &amp;action, NULL) != 0)
+	{
+		perror(&quot;Cannot register signal handler&quot;);
+		exit(EXIT_FAILURE);
+	}
+}</code></pre></li></ul><ul id="7c77ca78-c3ee-4d17-a8b5-23c76da8ffd4" class="bulleted-list"><li style="list-style-type:disc"><strong>main-Funktion</strong><pre id="da68086d-7f0a-42ec-936e-3750deebb442" class="code"><code>int main(void)
+{
+	register_signal_handler();
+
+	puts(&quot;Try to interrupt me with SIGINT(Ctrl+C)&quot; 
+				&quot;and see me fail miserably...&quot;);
+	non_async_safe_function();
+	puts(&quot;Okay, done...&quot;);
+}</code></pre></li></ul><h3 id="55f1178d-944f-44ff-99b7-3281f633c2f7" class="">Was ist das Problem?</h3><ul id="71d10232-70c3-427b-874a-cbc320bb837d" class="bulleted-list"><li style="list-style-type:disc"><strong><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red"><mark class="highlight-red">In diesem Beispiel</mark></mark></mark></mark></mark></mark></mark></mark></strong><figure id="baf1422c-5b3a-4848-ad88-340e50bfeca9" class="image"><a href="Untitled%2036.png"><img style="width:978px" src="Untitled%2036.png"/></a></figure></li></ul><ul id="8502a2ca-a7fd-45d0-928c-6b40819d2edd" class="bulleted-list"><li style="list-style-type:disc"><mark class="highlight-red"><strong>Allgemein</strong></mark><ol type="1" id="5838982d-a0ef-4831-891b-b4d9336c39d2" class="numbered-list" start="1"><li>Regulär ausgeführter Code sperrt Mutex</li></ol><ol type="1" id="64347e0d-d246-4557-81c5-72f7aedeff51" class="numbered-list" start="2"><li>Signal trifft ein</li></ol><ol type="1" id="1ce15148-397a-405d-b218-010e75bb2d5a" class="numbered-list" start="3"><li>Signalhandler versucht, bereits gesperrten Mutex erneut zu sperren</li></ol><ol type="1" id="b693d1e3-83c9-459b-849c-b8dc3a101085" class="numbered-list" start="4"><li><strong>Deadlock!</strong></li></ol></li></ul><ul id="9d2bff98-022e-48fd-9cf5-59cc9ef605e6" class="bulleted-list"><li style="list-style-type:disc"><mark class="highlight-red"><strong>Konsequenzen</strong></mark><ul id="54a18d27-c7f0-41cd-a7ca-b484a81f5d94" class="bulleted-list"><li style="list-style-type:circle">Viele Funktionen benutzen intern einen Mutex um Threadsicherheit herzustellen…</li></ul><ul id="e7c109e5-e66a-45b7-bc45-7b15731b983d" class="bulleted-list"><li style="list-style-type:circle">… können deshalb aber nicht in Signalhandlern verwendet werden!</li></ul><ul id="92800e81-b0fb-409d-a23a-5590e96f8387" class="bulleted-list"><li style="list-style-type:circle">Betrifft viele “Prominente””:<ul id="b362172f-528a-4947-9149-dd475e4c3638" class="bulleted-list"><li style="list-style-type:square"><code>printf()</code>, <code>puts()</code>, <code>scanf()</code>...</li></ul><ul id="e02c2d55-9a53-4769-abf7-2d88335f1851" class="bulleted-list"><li style="list-style-type:square"><code>malloc()</code>, <code>calloc()</code>, <code>free()</code>...</li></ul><ul id="0cc4ffa6-9413-4882-ac3f-5e39fc734f1e" class="bulleted-list"><li style="list-style-type:square"><code>exit()</code></li></ul></li></ul><ul id="a0f6450c-352d-4b6d-94d4-4fdf452a3c4c" class="bulleted-list"><li style="list-style-type:circle"><strong>Achtung:</strong> <strong>In vielen Beispielen (Bücher, Internet) falsch!</strong></li></ul><ul id="5c027ae3-f3ea-40c0-a0b4-f81b46408c51" class="bulleted-list"><li style="list-style-type:circle"><strong>Allgemein: Nur in man </strong><strong><code>7 signal-safety</code></strong><strong> aufgelistete Funktionen in Signalhandlern  verwenden!</strong></li></ul><p id="b4fe7d2a-9eb5-4dd3-af59-179fca2e6f1b" class="">
+</p></li></ul><h3 id="eca027e0-66fb-4eb9-9740-33ab9d2f4b28" class="">Signale und Multithread-Anwendungen</h3><ul id="1e070e9e-11ab-4ee5-8a3e-d60039ae4b6a" class="bulleted-list"><li style="list-style-type:disc"><strong>Signale an Threads</strong><ul id="82999e3c-5cd3-4b8b-aac7-dd63f27d17a9" class="bulleted-list"><li style="list-style-type:circle"><code>pthread_kill()</code></li></ul><ul id="909a740b-a60a-436b-ae27-f2f475c390c1" class="bulleted-list"><li style="list-style-type:circle">Schickt ein Signal an einzelnen Thread des selben Prozesses</li></ul></li></ul><ul id="646818a3-fbca-4ac1-b821-8f12fbb6f244" class="bulleted-list"><li style="list-style-type:disc"><strong>Signale an Prozesse</strong><ul id="8b4d50a0-7556-4099-b692-8b7d77e7a182" class="bulleted-list"><li style="list-style-type:circle"><code>kill()</code></li></ul><ul id="73a4ecaf-5c14-460b-9057-634eedb8d7f2" class="bulleted-list"><li style="list-style-type:circle">Schickt ein Signal an einen Prozess</li></ul><ul id="6e82c22f-b4de-49b7-bc66-dce09adddcbb" class="bulleted-list"><li style="list-style-type:circle">Betriebssystem stellt das Signal an <strong>einen beliebigen, empfangsbereiten</strong> Thread des Prozesses zu</li></ul></li></ul><ul id="4674b65b-e8fa-4b20-a978-922caaaba3d5" class="bulleted-list"><li style="list-style-type:disc"><mark class="highlight-teal"><strong>Einfache Lösung für Signalbehandlung</strong></mark><ol type="1" id="1b80e355-b6af-4fbb-b0ac-c02c067534e8" class="numbered-list" start="1"><li>Zu Beginn des Programms Signale blockieren: <code>pthread_sigmask()</code></li></ol><ol type="1" id="06df34ea-8170-4116-a41e-5b22cf2e1c73" class="numbered-list" start="2"><li>In eigenem Thread auf Signale warten und reaieren: <code>sigwait()</code></li></ol></li></ul><ul id="b17a2b3d-a82f-474e-bd55-4cf6b19027d1" class="bulleted-list"><li style="list-style-type:disc"><mark class="highlight-teal"><strong>Wie funktioniert das?</strong></mark><figure id="3ee68a2c-e3d0-4990-8cea-20b5ffa6db80" class="image"><a href="Untitled%2037.png"><img style="width:1128px" src="Untitled%2037.png"/></a></figure></li></ul><h1 id="16daafb0-1c95-4a60-af31-060fe5f2c77e" class="">Datenkanäle</h1><h2 id="95640a3f-bbb0-4ee3-bfd2-e2aaad5f7c2c" class="">Pipes</h2><h3 id="66109ec0-ad47-4bf0-9523-d37711c04196" class="">Pipe als Byte-Strom</h3><div id="9152b6e6-cdc3-4dae-b368-bf01c53a309d" class="column-list"><div id="d5be34c2-9947-4242-be6c-d67262dd04ae" style="width:50%" class="column"><figure id="b550fcd9-9409-48c6-a6fb-9104a4b9f630" class="image"><a href="Untitled%2038.png"><img style="width:1576px" src="Untitled%2038.png"/></a></figure></div><div id="699bd373-be48-4be7-b070-22ecf511cfda" style="width:50%" class="column"><figure id="98aea3d0-54f4-43ef-80b9-10ed4efc292e" class="image"><a href="Untitled%2039.png"><img style="width:1576px" src="Untitled%2039.png"/></a></figure></div></div><div id="ff243c67-be9f-4833-b3ae-f3c01ce96a90" class="column-list"><div id="5ed72e57-14db-45b2-858b-51259a7f8183" style="width:50%" class="column"><figure id="6a9a9cbd-868f-41b2-b49d-a31b9b438677" class="image"><a href="Untitled%2040.png"><img style="width:1576px" src="Untitled%2040.png"/></a></figure></div><div id="2c49a59a-1cfa-43b5-b08a-583c8ad2b191" style="width:50%" class="column"><figure id="eab03bae-981b-4441-bc85-84e0680b62dc" class="image"><a href="Untitled%2041.png"><img style="width:1576px" src="Untitled%2041.png"/></a></figure></div></div><div id="43923486-c22f-4e09-aaf1-512eebcafd0f" class="column-list"><div id="cdf230b2-8a97-4121-985d-3ddc3b0063c4" style="width:50%" class="column"><figure id="df4069e5-bdba-4684-a313-38fdf7291511" class="image"><a href="Untitled%2042.png"><img style="width:1576px" src="Untitled%2042.png"/></a></figure></div><div id="2ac7e6f2-b481-42c1-8aba-c7c356f87de4" style="width:50%" class="column"><figure id="63e39526-e9fc-400b-80dc-0db1ce309297" class="image"><a href="Untitled%2043.png"><img style="width:1576px" src="Untitled%2043.png"/></a></figure></div></div><div id="92d40f48-194c-4d16-925b-fcf37c495193" class="column-list"><div id="f526f0b9-b3bc-452e-a59c-a0f685dc6bb6" style="width:50%" class="column"><figure id="3f69416d-bc59-488d-ad7a-4cbdd1fca725" class="image"><a href="Untitled%2044.png"><img style="width:1576px" src="Untitled%2044.png"/></a></figure></div><div id="fd739d5a-c4e9-415b-b3be-f27fa0dedd53" style="width:50%" class="column"><figure id="589752a1-8c0f-4878-8e6b-d0f021d68049" class="image"><a href="Untitled%2045.png"><img style="width:1576px" src="Untitled%2045.png"/></a></figure></div></div><div id="3aa17cd6-c790-4090-ad2c-477a9735b90c" class="column-list"><div id="d4d0fb3d-dbe5-4c56-a12e-9d77187aba27" style="width:50%" class="column"><figure id="43083915-6dc6-4e44-8494-885ca85cac98" class="image"><a href="Untitled%2046.png"><img style="width:1576px" src="Untitled%2046.png"/></a></figure></div><div id="4f905b50-3416-4fed-8f68-3446a19b6f2f" style="width:50%" class="column"><figure id="64f1aace-78cd-4d02-aced-1d3933a1ee17" class="image"><a href="Untitled%2047.png"><img style="width:1576px" src="Untitled%2047.png"/></a></figure></div></div><ul id="57207e01-822c-423b-be6d-9b3744574ee5" class="bulleted-list"><li style="list-style-type:disc">Pipe <strong>leer</strong> <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\to</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span></span><span>﻿</span></span> <strong>Leser</strong> blockiert</li></ul><ul id="e2db897c-614e-4010-8fac-26a028ad0c1b" class="bulleted-list"><li style="list-style-type:disc">Pipe <strong>voll </strong><strong><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>→</mo></mrow><annotation encoding="application/x-tex">\to</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.36687em;vertical-align:0em;"></span><span class="mrel">→</span></span></span></span></span><span>﻿</span></span></strong><strong> Schreiber</strong> blockiert</li></ul><h3 id="8face463-c6aa-46ba-ba06-fd706786312e" class="">Einsatzgebiete von Pipes</h3><ul id="e9b49582-b3fd-4191-a1db-dcd9d36597c2" class="bulleted-list"><li style="list-style-type:disc"><strong>Zwischen Prozessen</strong><ul id="af3f55ff-fe6b-4104-90c4-c1a92d7bca08" class="bulleted-list"><li style="list-style-type:circle">Ein-/Ausgabeumleitungen in der Shell</li></ul><ul id="224c19e9-9008-47bc-8936-da7e30c806c6" class="bulleted-list"><li style="list-style-type:circle">z.B. <code>man -t 7 pipe | lpr</code></li></ul></li></ul><ul id="9d36bcb6-25d0-405b-8879-44ebc02190b9" class="bulleted-list"><li style="list-style-type:disc"><strong>Zwischen Threads</strong><ul id="694afed3-a790-42bd-adb9-9b5ebc42026b" class="bulleted-list"><li style="list-style-type:circle">Threads über unterschiedliche Ereignisse informieren</li></ul><ul id="881c40fa-6027-4f48-aa45-e13793576171" class="bulleted-list"><li style="list-style-type:circle">Zeitaufwändige Dateiausgaben asynchron durchführen</li></ul></li></ul><ul id="e6705f70-c4b5-459d-af90-cbcd57b5460b" class="bulleted-list"><li style="list-style-type:disc"><strong>Allgemein</strong><p id="7a50e28a-a59b-46d6-9d28-07504e318c09" class="">Wenn ein <strong>synchronisierter Byte</strong>-Strom zwischen Sender und Empfänger <strong>auf dem selben Rechner</strong> benötigt wird</p></li></ul><h3 id="5db06694-b360-40ce-b5c7-d467269aa75e" class="">Erzeugung von Pipes</h3><pre id="cc3812b7-87f8-4872-aa92-b1e4cef7911b" class="code"><code>int pipe(int pipefd[2]);</code></pre><ul id="3d4f63c9-1d41-4cc5-9108-835712a79b9c" class="bulleted-list"><li style="list-style-type:disc"><mark class="highlight-blue">pipefd</mark> Zeiger auf Array mit 2 ints, ub das due Dateideskriptoren der Pipe geschrieben werden:<ul id="44c910b2-48d4-49d8-be6c-8a48a1db5637" class="bulleted-list"><li style="list-style-type:circle"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue">pipefd[0] </mark></mark></mark></mark></mark></mark></mark></mark></mark></mark>Deskriptor zum <strong>Lesen</strong></li></ul><ul id="d886ed3a-bf2e-4c5b-9ef0-021866daf2f6" class="bulleted-list"><li style="list-style-type:circle"><mark class="highlight-blue">pipefd[1] </mark>Deskriptor zum <strong>Schreiben</strong></li></ul></li></ul><h3 id="301cf8dd-a175-40bb-b4f2-6b689016e125" class="">Lesen, Schreiben, Schließen</h3><p id="dec4ccce-fb77-4d43-b26f-0d29de05f2ba" class=""><strong>Pipes sind auch nur Dateien, also:</strong></p><ul id="9e2c7186-309d-4783-a05c-05f9b58823dd" class="bulleted-list"><li style="list-style-type:disc"><strong>Lesen</strong><pre id="3d6f1c34-20c2-4770-b827-0c44a124aa76" class="code"><code>ssize_t read(int fd, void *buf, size_t count);</code></pre><p id="23c02f65-f37c-4186-a558-3251907f9c5c" class=""><strong>Rückgabewert:</strong><div class="indented"><p id="c620b138-0c16-4ad6-aefa-6f647bd6b323" class=""><mark class="highlight-blue">&gt;0 </mark>Anzahl der gelesenen Bytes, <strong>kann weniger sein als angefordert!</strong></p><p id="7856e3fe-0959-4668-8be2-03266d7b8dd4" class=""><mark class="highlight-blue">= 0 </mark>Kein Schreiben mehr</p><p id="7b32a29e-2034-4df1-a453-74eeeba5864a" class=""><mark class="highlight-blue">= -1 </mark> Fehler</p></div></p></li></ul><ul id="0f06aac4-5900-45f8-8f77-f35affd5d2a0" class="bulleted-list"><li style="list-style-type:disc"><strong>Schreiben</strong><pre id="3c4380b1-dda5-4409-a5bf-ffa62b8e1c85" class="code"><code>ssize_t write(int fd, const void *buf, size_t count);</code></pre><ul id="03a662da-d8f3-4519-a20c-8e4424c7bc16" class="bulleted-list"><li style="list-style-type:circle">Atomar, wenn count &lt;= PIPE_BUF</li></ul><ul id="09721692-6255-4b0f-b15b-7ebe604ee879" class="bulleted-list"><li style="list-style-type:circle"><strong>Achtung: SIGPIPE wenn kein Leser mehr!</strong></li></ul></li></ul><ul id="aa992532-df12-491a-8adf-5e6a9c25ceef" class="bulleted-list"><li style="list-style-type:disc"><strong>Schließen</strong><pre id="bd50b912-81b9-45b1-983a-c17e72a57c4f" class="code"><code>int close(int fd);</code></pre></li></ul><h2 id="160b4e27-5b4e-4573-b167-5636dfdfedc9" class="">Message Queues</h2><h3 id="a2f2b132-94dc-4227-ae31-a39f8eb95f60" class="">Byte-orientiert vs. Nachrichten-orientiert</h3><ul id="5ebdf0e5-a72d-4973-975a-7a7c88fc3a94" class="bulleted-list"><li style="list-style-type:disc"><strong>Pipes</strong><figure id="f7dc8b9d-2e84-4a97-99da-91683a30cea3" class="image"><a href="Untitled%2048.png"><img style="width:1562px" src="Untitled%2048.png"/></a></figure><ul id="d8801a53-5624-4c47-9db8-3a5b81554763" class="bulleted-list"><li style="list-style-type:circle"><strong>Einheit:</strong> <strong>Bytes</strong></li></ul><ul id="bad81bf3-8a82-46fd-b3bc-8a4a55aa035a" class="bulleted-list"><li style="list-style-type:circle"><strong>Keine Berücksichtigung von Nachrichtengrenze</strong></li></ul></li></ul><ul id="908d2e04-fb8e-49cb-bee6-cd0393fe65fb" class="bulleted-list"><li style="list-style-type:disc"><strong>Message Queues</strong><figure id="dad0a3e2-4400-4638-93ba-0ecb59809ea4" class="image"><a href="Untitled%2049.png"><img style="width:1562px" src="Untitled%2049.png"/></a></figure><ul id="82888bfe-7bbf-4ded-81a6-ce95b1e99c33" class="bulleted-list"><li style="list-style-type:circle"><strong><strong><strong><strong><strong><strong><strong><strong>Einheit: Nachrichten mit ggf. unterschiedlicher Länge</strong></strong></strong></strong></strong></strong></strong></strong></li></ul><ul id="667481bc-f432-409f-b9f2-37e8db01827b" class="bulleted-list"><li style="list-style-type:circle"><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Leser erhält immer komplette Nachricht</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></li></ul></li></ul><h3 id="3cc33827-dfec-44ed-838b-98e695d3cfc9" class="">Prioritäten von Nachrichten</h3><div id="b34a2e40-0eab-41c1-9b11-1076accf7713" class="column-list"><div id="c56a499a-cd82-4cb9-a604-4ae81a16e596" style="width:50%" class="column"><figure id="319ffced-f193-4d64-8d23-2a6a89d34096" class="image"><a href="Untitled%2050.png"><img style="width:1562px" src="Untitled%2050.png"/></a></figure></div><div id="1263c272-09ae-491f-873a-cefaaee4faca" style="width:50%" class="column"><figure id="9caa423d-2d94-41fc-a233-f8fcc9de6f5a" class="image"><a href="Untitled%2051.png"><img style="width:1562px" src="Untitled%2051.png"/></a></figure></div></div><div id="131be1c2-e605-4edb-92cb-13498ff4ddd8" class="column-list"><div id="b4d6c123-e537-4596-9d74-95046ab43cda" style="width:50%" class="column"><figure id="2eb8e230-c2a3-48b5-98dc-a5e05c42d1b2" class="image"><a href="Untitled%2052.png"><img style="width:1562px" src="Untitled%2052.png"/></a></figure></div><div id="2101c7ae-7722-45e4-8fcc-74c056a2d880" style="width:50%" class="column"><figure id="57fd4ea9-7e97-4072-aa34-9922bdd0875a" class="image"><a href="Untitled%2053.png"><img style="width:1562px" src="Untitled%2053.png"/></a></figure></div></div><div id="6425f96d-c63e-4d7f-83da-8fb68e761b58" class="column-list"><div id="2a970f0c-7141-4f29-b6e1-70679c54d906" style="width:50%" class="column"><figure id="95eacd02-41fc-4ce2-81e5-96d9149fed1d" class="image"><a href="Untitled%2054.png"><img style="width:1562px" src="Untitled%2054.png"/></a></figure><figure id="886905f7-e193-4315-9390-e2780791235d" class="image"><a href="Untitled%2055.png"><img style="width:1562px" src="Untitled%2055.png"/></a></figure></div><div id="5af72638-7bbb-4f3d-bc69-1739da5e32ca" style="width:50%" class="column"><figure id="53e4f445-2ae8-4bf0-8c67-7d06f781a71e" class="image"><a href="Untitled%2056.png"><img style="width:1562px" src="Untitled%2056.png"/></a></figure></div></div><h3 id="7d25bd81-6482-4de0-9a45-699fd95944a0" class="">Erzeugung von Message Queues</h3><pre id="9d4d31c2-7dc3-4e72-8710-71a53ec989a9" class="code"><code>mqd_t ,q_open(const char *name, int oflag,
+							mode_t mode, struct mq_attr *attr);</code></pre><p id="5e76bfa5-5150-4abb-9db0-79ac9c9586a8" class=""><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue">name</mark></mark></mark></mark></mark></mark></mark> Name der Message Queue</p><p id="ad520076-576b-48d5-8a17-73c24287d83a" class=""><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue">oflag</mark></mark></mark></mark></mark> Flags (mit bitweisem Oder verknüpft):<div class="indented"><p id="84329c1f-9533-4ad2-a138-1acac9c1f5e9" class=""><mark class="highlight-blue">O_CREATE </mark><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>Message Queue erzeugen</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></p><p id="b0bc4074-65c5-40ef-925d-9127b9a29d47" class=""><mark class="highlight-blue">O_EXCL</mark> Fehlschlagen, wenn Queue schon existiert</p><p id="5d14ad75-92e6-412e-a318-5d8d81e0ce07" class=""><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue">O_RDONLY</mark></mark></mark></mark></mark></mark></mark></mark> Zum Empfangen öffnen</p><p id="6489e25a-4764-4044-b892-09376d6e5b97" class=""><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue">O_WRONLY</mark></mark></mark></mark></mark></mark></mark> Zum Senden öffnen</p><p id="21a609ee-b766-48dd-87f3-8ff76dd0bb02" class=""><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue">O_RDWR</mark></mark></mark></mark></mark> Zum Empfangen und Senden öffnen</p></div></p><p id="1f0cf9b1-b092-4cf9-8555-d6c20a61e5ce" class=""><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue">mode</mark></mark></mark></mark> “Datei”-Berechtigungen</p><p id="0470a93f-478c-4bcc-a7ef-4c192159ed6c" class=""><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue">attr</mark></mark></mark></mark> Kapazität<div class="indented"><pre id="7182b948-4eda-43a5-bc20-47d7bc5dc2c4" class="code"><code>struct mq_attr
+{
+	long mq_flags; /* Flags (ignored for mq_open()) */
+	long mq_maxmsg; /* Max. # of messages on queue */
+	long mq_msgsize; /* Max. message size (bytes) */
+	long mq_curmsgs; /* # of messages currently in queue (ignored for mq_open()) */
+}</code></pre></div></p><h3 id="4339ae40-0ce5-4486-b9ea-ca7027c41d3d" class="">Öffnen von Message Queues</h3><ul id="dc2d37ce-45fd-4aeb-a62b-07dae2e6e4f6" class="bulleted-list"><li style="list-style-type:disc"><strong>Wenn die Queue schon existiert…</strong><pre id="8fc69da1-05ed-4510-b1b3-b2a06f63f034" class="code"><code>mqd_t mq_open(const char *name, int flag);</code></pre><p id="c8bc8c5a-a03b-41bd-95e6-0446e4d3acad" class=""><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue">name</mark></mark></mark></mark></mark> Name der Message Queue</p><p id="1f0c3ee3-9940-49a8-bdf9-3ceb0f8f7fcd" class=""><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue">oflag</mark></mark></mark></mark></mark> Flag:<div class="indented"><p id="cf927dc6-39bf-4ad0-8981-ef7c2c0fca81" class=""><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue">O_RDONLY</mark></mark></mark></mark></mark></mark></mark></mark> Zum Empfangen öffnen</p><p id="ec40d716-48f0-4b88-95f4-a6621f8057be" class=""><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue">O_WRONLY</mark></mark></mark></mark></mark></mark></mark></mark> Zum Senden öffnen</p><p id="cc7536b2-42cf-44c1-ba9a-6501a33423a9" class=""><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue">O_RDWR</mark></mark></mark></mark></mark></mark> Zum Empfangen und Senden öffnen</p></div></p></li></ul><h3 id="3350198c-635a-47c9-becb-f4e85be7da53" class="">Versenden von Nachrichten</h3><ul id="c5d31fa4-9dd1-430f-be18-322a52e1a0f3" class="bulleted-list"><li style="list-style-type:disc"><strong>Nachrichtenversand</strong><pre id="2fd7af61-c230-4e67-a562-04fad8f5f18d" class="code"><code>int mq_send(mqd_t mqdes, const char *msg_ptr, size_t msg_len, unsigned int msg_prio);</code></pre><p id="a5cac565-6677-4763-a788-aae207fc9cf7" class=""><mark class="highlight-blue">mqdes </mark>Deskriptor der Message Queue</p><p id="819833af-34b9-4803-8829-92e60e858c18" class=""><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue">msg_ptr</mark></mark></mark></mark></mark></mark></mark> Zeiger auf die zu versendende Daten (muss nicht unbedingt ein String sein)</p><p id="13beded5-c752-40f2-b315-240f1ecbab59" class=""><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue"><mark class="highlight-blue">msg_len</mark></mark></mark></mark></mark></mark></mark> Länge der zu versendenen Daten</p><p id="b714e746-895b-44f1-a6f6-aa0d641977a9" class=""><mark class="highlight-blue">msg_prio</mark> Priorität der Nachricht (Nachrichten mit hohem Wert werden zuerst zugestellt)</p></li></ul><h3 id="5bd22a2b-a0df-4f02-81e2-b6df0d084c17" class="">Empfangen von Nachrichten</h3><ul id="9af1591e-dfe4-4d23-8498-04700b687121" class="bulleted-list"><li style="list-style-type:disc"><strong>Nachrichtenempfang</strong><pre id="ab341cf9-975a-4fe8-8bf9-baeb96fa0fd2" class="code"><code>ssize_t mq_receive(mqd_t mqdes, char *msg_ptr, size_t msg_len, unsigned int *msg_prio);</code></pre><p id="5b84b631-29b6-4b17-bd7f-ad82f00b354b" class=""><mark class="highlight-blue">mqdes</mark> Deskriptor der Message Queue</p><p id="7db8f13c-d3ff-4d1b-bfe3-eb02276a7b62" class=""><mark class="highlight-blue">msg_ptr</mark> Zeiger auf Puffer für die empfangenen Daten (muss nicht unbedingt ein String sein)</p><p id="d83abed9-3203-4773-b9a3-cedae0c2c2be" class=""><mark class="highlight-blue">msg_len</mark> Größe des Puffers, mindestens der bei <code>mq_open()</code> angegebene Wert</p><p id="cbd57c9b-10ab-4e58-b9b4-7c04f4680d33" class=""><mark class="highlight-blue">msg_prio</mark> Wenn ungleich <code>NULL</code>, dann wird die Priorität der Nachricht an diese Adresse geschrieben</p></li></ul><h3 id="c8794822-7178-4bb4-8344-e0db45c1fbd8" class="">Schließen von Message Queues</h3><ul id="c270744a-3004-45b1-bd6d-8ce4b0e7e318" class="bulleted-list"><li style="list-style-type:disc"><strong>Schließen</strong><pre id="a073cf07-8604-4722-b65a-eb688741d864" class="code"><code>int mq_close(mqd_t mqdes);</code></pre></li></ul><h3 id="cb12b5de-d6a6-4ae1-b52f-8754cdeb4faf" class="">Löschen von Message Queues</h3><p id="576c50f2-32b6-4fbb-8817-6aa430a687ab" class=""><strong>Message Queues bleiben bis zum Neustart des Rechners erhalten, wenn sie nicht gelöscht werden!</strong></p></div></article></body></html>
